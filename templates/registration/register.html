@@ -1,0 +1,565 @@
+{% extends 'registration/base.html' %}
+
+{% block content %}
+    <style>
+        .alert, #regSuccess, #mailNotSent, #empForm, #startupForm, #eventsError{
+            display: none;
+        }
+
+        .btn-link:hover{
+            text-decoration: none !important;
+        }
+    </style>
+    <div class="panel" id="errorMessage">
+                    <div class="panel-body">
+                        <h3 class="title-hero">Resolve the following errors.</h3>
+                        <div class="example-box-wrapper">
+                            <div class="alert alert-danger" id="categoryError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Category Not Selected</h4>
+                                    <p>Please select your category before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="eventsError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Events not selected</h4>
+                                    <p>Please select atleast one event you want to particpate in during GES.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="idError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Team Id</h4>
+                                    <p>The team ID you've entered is not a valid team id for semi-finalists. Please check for typos</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="nameError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Name</h4>
+                                    <p>Please enter your name before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="mobileError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Mobile Number</h4>
+                                    <p>Please enter your 10 Digit Mobile Number before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="genderError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Gender</h4>
+                                    <p>Please select your gender before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="cityError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">City Not Selected</h4>
+                                    <p>Please select your city before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="collegeError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid College</h4>
+                                    <p>Please select your college before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="companyError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Company/Startup Name</h4>
+                                    <p>Please enter name of your company/startup before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="tidError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Team Id/Email</h4>
+                                    <p>Team ID you entered does not exists. Check for typos in email and id.</p>
+                                    <p>Make sure you've entered the email address which is registered with us for empresario.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="passwordError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Password Error</h4>
+                                    <p>Your Passwords do not match.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="tshirtError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid T-Shirt Size</h4>
+                                    <p>Please select your t-shirt size before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="tcError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Review Terms and Conditions</h4>
+                                    <p>Please accept our terms & conditions before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="emailInvalidError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Invalid Email</h4>
+                                    <p>Please enter a valid email address before submitting the form.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="emailExistError">
+                                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Email Exits</h4>
+                                    <p>Email you entered is already registered, please try with a different email.</p>
+                                </div>
+                            </div>
+                            <div class="alert alert-success" id="registerSuccess">
+                                <div class="bg-green alert-icon"><i class="glyph-icon icon-check"></i></div>
+                                <div class="alert-content">
+                                    <h4 class="alert-title">Registration Successful</h4>
+                                    <p>Please verify your email address by <code>clicking verification link</code> sent to your registered email.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    <div class="panel">
+        <div class="panel-body">
+            <h3 class="title-hero">Registration: GES 2019</h3>
+            <div class="example-box-wrapper">
+                <form class="form-horizontal bordered-row" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="category" id="category" value="">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="id_category">Select Your Category</label>
+                        <div class="col-sm-6">
+                            <select class="custom-select category" required>
+                                <option selected disabled value="">Select Your Category</option>
+                                {% for option in form.category.field.choices %}
+                                    <option value="{{ option.0 }}">{{ option.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="empForm">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.emp_id.id_for_label }}">Empresario Team ID</label>
+                            <div class="col-sm-6">
+                              {{ form.emp_id }}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mainForm">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.name.id_for_label }}">Name</label>
+                            <div class="col-sm-6">
+                              {{ form.name }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.gender.id_for_label }}">Gender</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    {% for gender in form.gender %}
+                                        <div class="col-sm-6">
+                                            <div class="radio-info">
+                                                {{ gender }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="cityField">
+                            <label class="col-sm-3 control-label" for="{{ form.city.id_for_label }}">City</label>
+                            <div class="col-sm-6">
+                                <select name="city" class="city custom-select popover-button-default" data-trigger="focus" data-placement="right" data-original-title="If your city is not present here, please contact" data-content="Akshat Jain |  akshat.jain@ecell-iitkgp.org | 7432089151">
+                                    <option selected disabled>Select Your City</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="collegeField">
+                            <label class="col-sm-3 control-label" for="{{ form.college.id_for_label }}">College</label>
+                            <div class="col-sm-6">
+                                <select name="college" class="college custom-select popover-button-default" data-trigger="focus" data-placement="right" data-original-title="If your college is not present here, please contact" data-content="Gouri Ikhe |  gouri.ikhe@ecell-iitkgp.org | 7432097205">
+                                    <option selected disabled>Select Your College</option>
+                                </select><br>
+                                <span>Couldn't find your city/college?<a href="{% url 'newCollege' %}" class="btn btn-info mrg10L">Request Invite</a></span>
+                            </div>
+                        </div>
+                        <div class="form-group" id="companyField">
+                            <label class="col-sm-3 control-label" for="{{ form.company.id_for_label }}">Company</label>
+                            <div class="col-sm-6">
+                              {{ form.company }}
+                            </div>
+                        </div>
+                        <div id="startupForm">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Event Types</label>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="checkbox checkbox-info">
+                                                <label>
+                                                    <div class="checker" id="uniform-inlineCheckbox111">
+                                                        <span>
+                                                            <input name='events' id="inlineCheckbox111" class="custom-checkbox" type="checkbox" value="epitch">
+                                                            <i class="glyph-icon icon-check"></i>
+                                                        </span>
+                                                    </div>
+                                                    Elevator's Pitch
+                                                </label>
+                                            </div>
+                                            <div class="checkbox checkbox-info">
+                                                <label>
+                                                    <div class="checker" id="uniform-inlineCheckbox112">
+                                                        <span>
+                                                            <input name='events' id="inlineCheckbox112" class="custom-checkbox" type="checkbox" value="comeet">
+                                                            <i class="glyph-icon icon-check"></i>
+                                                        </span>
+                                                    </div>
+                                                    Co-Founder's Meet
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="checkbox checkbox-info">
+                                                <label>
+                                                    <div class="checker" id="uniform-inlineCheckbox114">
+                                                        <span>
+                                                            <input name='events' id="inlineCheckbox114" class="custom-checkbox" type="checkbox" value="pexpo">
+                                                            <i class="glyph-icon icon-check"></i>
+                                                        </span>
+                                                    </div>
+                                                    Product Expo
+                                                </label>
+                                            </div>
+                                            <div class="checkbox checkbox-info">
+                                                <label>
+                                                    <div class="checker" id="uniform-inlineCheckbox115">
+                                                        <span>
+                                                            <input name='events' id="inlineCheckbox115" class="custom-checkbox" type="checkbox" value="scamp">
+                                                            <i class="glyph-icon icon-check"></i>
+                                                        </span>
+                                                    </div>
+                                                    Startup Camp
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.email.id_for_label }}">Email</label>
+                            <div class="col-sm-6">
+                              {{ form.email }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.mobile.id_for_label }}">Mobile Number</label>
+                            <div class="col-sm-6">
+                              {{ form.mobile }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.tshirt.id_for_label }}">T-Shirt Size</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    {% for size in form.tshirt %}
+                                        <div class="col-sm-4">
+                                            <div class="radio-info">
+                                                {{ size }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.password.id_for_label }}">Password</label>
+                            <div class="col-sm-6">
+                              {{ form.password }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.confirm_password.id_for_label }}">Repeat Password</label>
+                            <div class="col-sm-6">
+                              {{ form.confirm_password }}
+                          </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="checkbox checkbox-info">
+                                            <label>
+                                                <input name="agree" type="checkbox" id="inlineCheckbox114" checked="checked" class="custom-checkbox">By Submitting, you agree to our Terms & Conditions.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-default content-box text-center pad20A mrg25T">
+                            <button class="btn btn-lg btn-info" id="submit">Register</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="collegeContingent" class="col-sm-9">
+                    <div class="content-box border-top border-blue">
+                        <h3 class="content-box-header clearfix">College Contingent
+                            <small>(Registration Process)</small>
+                        </h3>
+                        <div class="content-box-wrapper">
+                            <p>In order to register as a contingent, all members should first register under their respective categories.</p>
+                            <div class="divider"></div>
+                            <p>Once all members have registered individually, the group leader can login to the portal and create a contingent.</p>
+                            <div class="divider"></div>
+                            <p>Once a contingent is created, we will provide leader with unique credentials, using which remaining members of the contingent can join the respective contingent.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="regSuccess" class="col-sm-9">
+                    <div class="content-box border-top border-green">
+                        <h3 class="content-box-header clearfix">Registration Successful
+                            <small>(Post Registration Process)</small>
+                        </h3>
+                        <div class="content-box-wrapper">
+                            <p>Voila! You have successfully registered for GES 2019. An Email will be sent to your registered email address.</p>
+                            <div class="divider"></div>
+                            <p>Before logging in, you need to verify your email by visiting the verification link present in the email.</p>
+                            <div class="divider"></div>
+                            <p>Verification link is one time visit link i.e. it will expire once you visit it.</p>
+                            <div class="divider"></div>
+                            <p>If the verification is successful it will redirect you to login page and you will be able to login, to complete the porcess.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="mailNotSent" class="col-sm-9">
+                    <div class="content-box border-top border-red">
+                        <h3 class="content-box-header clearfix">SMTP Error
+                            <small>(Unable to send verification email)</small>
+                        </h3>
+                        <div class="content-box-wrapper">
+                            <p>Voila! You have successfully registered for GES 2019.</p>
+                            <div class="divider"></div>
+                            <p>However, our systems are unable to send a verification email to your registered email address.</p>
+                            <div class="divider"></div>
+                            <p>Contact one of the below mentioned persons stating above mentioned reason, for manual email verification</p>
+                            <div class="divider"></div>
+                            <p>{# TODO: Add Tech Team Contact Details here. #}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Script for rendering appropriate form on change of category #}
+    <script>
+        $('form').each(function() { this.reset() });
+
+        $('.category').change(function() {
+            $(this).change(function(){
+                window.location.reload();
+            });
+           $(this).prop("disabled", "disabled");
+           const category = $(this).val();
+           $("#category").attr("value", category);
+           // $('#mainForm').css('display','block');
+           if(category === 'College Contingent'){
+               $('#collegeContingent').css('display','block');
+           }
+           else if(category === 'Professional'){
+               $('#companyField').css('display','block');
+               $('#mainForm').css('display', 'block');
+               $('#collegeField').remove();
+           }
+           else if (category === 'Startup' || category === 'Empresario Semi-Finalists'){
+               $('#id_name').parent().siblings('label').html("Team Representative's Name");
+               $('#id_company').parent().siblings('label').html("Name of the Startup");
+               $('#id_company').prop('placeholder','Enter Name of Startup Here.');
+               $('#companyField').css('display','block');
+               $('#collegeField').remove();
+               $('#mainForm').css('display', 'block');
+               if(category !== 'Startup'){
+                   $('#empForm').css('display', 'block');
+                   $('#id_email').prop('placeholder','Enter your email address registered with empresario.');
+                   $('#id_emp_id').prop('required','required');
+               }
+               else{
+                   $('#startupForm').css('display', 'block');
+               }
+           }
+           // category : Student, Professor, CA, GES-A
+           else{
+               $('#companyField').remove();
+               $('#mainForm').css('display', 'block');
+           }
+        });
+    </script>
+
+    {# AJAX Script to handle validation #}
+    <script>
+        var eventType = [];
+        function checkValid(value, name){
+            if(name === "mobile"){
+                const len = value.length;
+                const isInt = Number.isInteger(parseInt(value));
+                if(len == 10 && isInt){
+                    $("#"+name+"Error").css("display","none");
+                    return true;
+                } else{
+                    $("#errorMessage").css("display","block");
+                    $("#"+name+"Error").css("display","block");
+                    return false;
+                }
+            } else if(name === "password"){
+                const password = $("#id_confirm_password").val();
+                if(value && value === password){
+                    $("#"+name+"Error").css("display","none");
+                    return true;
+                }else {
+                    $("#errorMessage").css("display","block");
+                    $("#"+name+"Error").css("display","block");
+                    return false;
+                }
+            } else{
+                if(value === null || value === undefined || value.length === 0){
+                    $("#errorMessage").css("display","block");
+                    $("#"+name+"Error").css("display","block");
+                    return false;
+                }else {
+                    $("#"+name+"Error").css("display","none");
+                    return true;
+                }
+            }
+        }
+
+        $("#submit").click(function(e){
+            e.preventDefault();
+            const category_value = $('.category').val();
+            const category = checkValid(category_value, "category");
+            const city = checkValid($(".city").val(), "city");
+            var college = '';
+            var company = '';
+            if (category_value === 'Professional' || category_value === 'Startup' || category_value === 'Empresario Semi-Finalists'){
+                company = checkValid($("#id_company").val(), "company");
+            } else{
+                college = checkValid($(".college").val(), "college");
+            }
+			const tshirt = checkValid($("[name='tshirt']:checked").val(), "tshirt");
+			const gender = checkValid($("[name='gender']:checked").val(), "gender");
+			const tc = checkValid($("[name='agree']:checked").val(), "tc");
+            const name = checkValid($("#id_name").val(), "name");
+            const mobile = checkValid($("#id_mobile").val(), "mobile");
+            const password = checkValid($("#id_password").val(), "password");
+            if(category_value === 'Startup'){
+                $(".custom-checkbox:checked").each(function () {
+                    value = $(this).val();
+                    if(value !== 'on'){
+                        eventType.push($(this).val());
+                    }
+                });
+                console.log(eventType);
+       			const events = checkValid($("[name='events']:checked").val(), "events");
+       			if(!events){
+       			    return;
+                }
+            }
+
+			if(category && city && (college || company) && tshirt && gender && tc && name && mobile && password)
+            {
+                $("#errorMessage").css("display","none");
+                const dataString = $("form").serialize();
+                $("#submit").html("<div class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-4 icon-spin\" title=\"\" data-original-title=\"icon-spin-4\"></div>Validating Data");
+                $("#loading").css('display','block');
+                $("#loading").css('opacity','0.5');
+                $("#loading").css('background','#000');
+                $.ajax({
+                    url: '/register/validate',
+                    data: dataString+'&eventType='+eventType.join('-'),
+                    cache: false,
+                    type: 'POST',
+                    success: function (data) {
+                        if(data === 'Invalid Email'){
+                            $("#errorMessage").css("display", "block");
+                            $("#emailExistError").css("display", "none");
+                            $("#emailInvalidError").css("display", "block");
+                        } else if(data === 'Email Exists'){
+                            $("#errorMessage").css("display", "block");
+                            $("#emailInvalidError").css("display", "none");
+                            $("#emailExistError").css("display", "block");
+                        } else if(data === 'no team'){
+                            $("#errorMessage").css("display", "block");
+                            $("#tidError").css("display", "block");
+                        } else if(data === 'User Saved'){
+                            $("#errorMessage").css("display", "none");
+                            $("form").css("display", "none");
+                            $("#mailNotSent").css("display", "block");
+                            $('form').each(function() { this.reset() });
+                        } else{
+                            $("#errorMessage").css("display", "none");
+                            $("form").css("display", "none");
+                            $("#mailNotSent").css("display", "none");
+                            $("#regSuccess").css("display", "block");
+                            $('form').each(function() { this.reset() });
+                            window.location.hash = '#regSuccess';
+                        }
+                        $("#submit").html("Register");
+                        $("#loading").css('display','none');
+                    },
+                    error: function (data) {
+                        alert("Unable to process your request due to internal server errors. Please try again later.");
+                        $("#loading").css('display','none');
+                        console.log(data);
+                    },
+                });
+            }
+            window.location.hash = '#errorMessage';
+        });
+    </script>
+
+    {# AJAX Script to get list of cities & colleges#}
+    <script>
+       $.ajax({
+           url: '/register/city',
+           cache: false,
+           data: $("form").serialize(),
+           type: 'POST',
+           success: function(data){
+               $(".city").append(data);
+           },
+           error: function(data){
+               alert('Unable to fetch city list due to internet connectivity issues.');
+           }
+       });
+
+       $(".city").change(function (){
+           $(".college").empty();
+           $(".college").append("<option selected disabled>Select Your College</option>");
+           const city = $(this).val();
+           $.ajax({
+               url: '/register/college/'+city+'/',
+               cache: false,
+               data: $("form").serialize(),
+               type: 'POST',
+               success: function(data){
+                   $(".college").append(data);
+               },
+               error: function(data){
+                   alert('Unable to fetch city list due to internet connectivity issues.');
+               }
+           });
+       });
+    </script>
+{% endblock %}

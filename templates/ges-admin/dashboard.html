@@ -1,0 +1,74 @@
+{% extends 'ges-admin/base2.html' %}
+
+{% block content %}
+    {% load static %}
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-core.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-bar.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-doughnut.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-line.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-polar.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-radar.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/charts/chart-js/chart-demo.js' %}"></script>
+
+    <ul>
+        <li>Registrations: By City</li> {# for only pr heads #} {# Pie #}
+        <li>Registrations: By Date</li>{#  #}
+        <li>Registrations: By Category</li> {# for only pr heads #}
+        <li>Payments: By City</li> {# for only fnl heads & pr heads #}
+        <li>Payments: By Date</li> {# for only fnl heads & pr heads #}
+        <li>Payments: By Category</li> {# for only fnl heads & pr heads #}
+        <li>Travel: By City</li>
+        <li>Travel: By Date</li>
+        <li>Startups: By Events</li>
+    </ul>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel">
+                <div class="panel-body"><h3 class="title-hero">Bar</h3>
+                    <div class="example-box-wrapper">
+                        <canvas id="canvas-1" height="450" width="600"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-body"><h3 class="title-hero">Polar area</h3>
+                    <div class="example-box-wrapper">
+                        <canvas id="chart-area-3" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel">
+                <div class="panel-body"><h3 class="title-hero">Doughnut</h3>
+                    <div class="example-box-wrapper">
+                        <canvas id="chart-area" width="500" height="500"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-body"><h3 class="title-hero">Pie chart</h3>
+                    <div class="example-box-wrapper">
+                        <canvas id="chart-area-2" class="center-margin" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel">
+                <div class="panel-body"><h3 class="title-hero">Line</h3>
+                    <div class="example-box-wrapper">
+                        <canvas id="canvas-2" height="450" width="600"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-body"><h3 class="title-hero">Radar chart</h3>
+                    <div class="example-box-wrapper">
+                        <canvas id="canvas-4" height="450" width="450"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

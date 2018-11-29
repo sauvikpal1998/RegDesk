@@ -1,0 +1,75 @@
+{% extends 'ges-admin/base2.html' %}
+
+{% block content %}
+{#                <script type="text/javascript" src="../../assets/widgets/datatable/datatable.js"></script>#}
+{#                <script type="text/javascript" src="../../assets/widgets/datatable/datatable-bootstrap.js"></script>#}
+{#                <script type="text/javascript" src="../../assets/widgets/datatable/datatable-responsive.js"></script>#}
+                <script type="text/javascript">/* Datatables responsive */
+
+                {#$(document).ready(function () {#}
+                {#    $('#datatable-responsive').DataTable({#}
+                {#        responsive: true#}
+                {#    });#}
+                {#});#}
+
+                $(document).ready(function () {
+                    $('.dataTables_filter input').attr("placeholder", "Search...");
+                });</script>
+    <div class="panel">
+        <div class="panel-body"><h3 class="title-hero">GES 2019 Startups Registered</h3>
+            <div class="example-box-wrapper">
+                <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>View</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>City</th>
+                        <th>College</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Events</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>View</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>City</th>
+                        <th>College</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Events</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for data in reg_data %}
+                        <tr>
+                            <td><a href="{% url 'admin_view_profile' id=data.0.id %}"><i class="glyph-icon icon-linecons-paper-plane"></i></a></td>
+                            <td>{{ data.1.name }}</td>
+                            <td>{{ data.1.category }}</td>
+                            <td>{{ data.1.city }}</td>
+                            <td>{{ data.1.college }}</td>
+                            <td>
+                                {{ data.1.user }}&nbsp;&nbsp;
+                                <a title="Email {% if not user.is_active %}not {% endif %}Verified" href="#" class="{% if user.is_active %}green{% else %}red{% endif %}">
+                                    <i class="glyph-icon icon-{% if user.is_active %}check{% else %}exclamation{% endif %}-circle"></i>
+                                </a>
+                            </td>
+                            <td>{{ data.1.mobile }}</td>
+                            <td>
+                                <ul style="list-style-type: initial !important;">
+                                    {% for event in data.2 %}
+                                        <li>{{ event }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

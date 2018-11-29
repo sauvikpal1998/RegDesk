@@ -1,0 +1,170 @@
+{% extends 'ges-admin/base2.html' %}
+
+{% block content %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+                    $('.dataTables_filter input').attr("placeholder", "Search...");
+                });
+
+        /* Datatable row highlight */
+
+        $(document).ready(function() {
+            var table = $('#datatable-row-highlight').DataTable();
+
+            $('#datatable-row-highlight tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('tr-selected');
+            } );
+        });
+
+    </script>
+
+    <style>
+        li{
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="panel">
+        <div class="panel-body"><h3 class="title-hero">GES 2019 College Pending Requests</h3>
+            <div class="example-box-wrapper">
+                <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>Name of College</th>
+                        <th>City</th>
+                        <th>Name of Applicant</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Contact Info</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>Name of College</th>
+                        <th>City</th>
+                        <th>Name of Applicant</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Contact Info</th>
+                        <th>Action</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for data in colleges %}
+                        <tr id="{{ data.id }}">
+                            <td>{{ data.college }}</td>
+                            <td>{{ data.city }}</td>
+                            <td>{{ data.name }}</td>
+                            <td>{{ data.email }}</td>
+                            <td>{{ data.mobile }}</td>
+                            <td>
+                                <ul style="list-style-type: initial !important;">
+                                    <li>Contact Dean: {{ data.contact_dean }}</li>
+                                    <li>Contact Ecell: {{ data.contact_ecell }}</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul id="action-{{ data.id }}">
+                                    <li class="mrg10B green" onclick="action({{ data.id }}, 1)"><i class="glyphicon icon-thumbs-up"></i><a><span class="green">&nbsp;&nbsp;Accept</span></a></li>
+                                    <li class="red" onclick="action({{ data.id }}, 0)"><i class="glyphicon icon-thumbs-down"></i><a><span class="red">&nbsp;&nbsp;Reject</span></a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-body"><h3 class="title-hero">GES 2019 Existing Colleges</h3>
+            <div class="example-box-wrapper">
+                <div id="datatable-row-highlight_wrapper" class="dataTables_wrapper form-inline">
+                        <table id="datatable-row-highlight" class="table table-striped table-bordered dataTable" role="grid"
+                           aria-describedby="datatable-row-highlight_info" style="width: 100%;" width="100%"
+                           cellspacing="0">
+                        <thead>
+                        <tr role="row">
+                            <th class="sorting_asc" tabindex="0" aria-controls="datatable-row-highlight" rowspan="1"
+                                colspan="1" style="width: 252px;" aria-sort="ascending"
+                                aria-label="Name: activate to sort column ascending">Name of College
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="datatable-row-highlight" rowspan="1"
+                                colspan="1" style="width: 373px;"
+                                aria-label="Position: activate to sort column ascending">City
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="datatable-row-highlight" rowspan="1"
+                                colspan="1" style="width: 191px;"
+                                aria-label="Office: activate to sort column ascending">Point of Contact
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="datatable-row-highlight" rowspan="1"
+                                colspan="1" style="width: 95px;" aria-label="Age: activate to sort column ascending">Email
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="datatable-row-highlight" rowspan="1"
+                                colspan="1" style="width: 171px;"
+                                aria-label="Start date: activate to sort column ascending">Mobile
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="datatable-row-highlight" rowspan="1"
+                                colspan="1" style="width: 148px;"
+                                aria-label="Salary: activate to sort column ascending">Designation
+                            </th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th rowspan="1" colspan="1">Name of College</th>
+                            <th rowspan="1" colspan="1">City</th>
+                            <th rowspan="1" colspan="1">Point of Contact</th>
+                            <th rowspan="1" colspan="1">Email</th>
+                            <th rowspan="1" colspan="1">Mobile</th>
+                            <th rowspan="1" colspan="1">Designation</th>
+                        </tr>
+                        </tfoot>
+                        <tbody id="college-body">
+                        {% for data in current %}
+                            <tr role="row" class="odd">
+                                <td>{{ data.college }}</td>
+                                <td>{{ data.city }}</td>
+                                <td>{{ data.name }}</td>
+                                <td>{{ data.email }}</td>
+                                <td>{{ data.mobile }}</td>
+                                <td>{{ data.designation }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function action(id, task){
+            const table = $('#'+id);
+            const college_dom = table;
+            const ul = $('#action-'+id);
+            var parent = ul.parent();
+            ul.css('display', 'none');
+            parent.append('<div class="glyph-icon icon-spinner"> Processing</div>');
+            $.ajax({
+                url: '/admin-panel/act-college/'+id+'/'+task,
+                data: '',
+                success: function () {
+                    college_dom.css('display', 'block');
+                    $('#college-body').append(college_dom);
+                    table.remove();
+                    if (task){
+                        alert('Request Accepted');
+                    } else{
+                        alert('Request Rejected');
+                    }
+                },
+                error: function (data) {
+                    alert(data);
+                    table.css('display', 'block')
+                }
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'login/base.html' %}
+
+
+{% block content %}
+
+  {% if userdata.contingent and not userdata.admin %}
+        <div class="panel" id="errorMessage">
+            <div class="panel-body">
+                <h3 class="title-hero">Information</h3>
+                <div class="example-box-wrapper">
+                    <div class="alert alert-notice" id="categoryError">
+                        <div class="bg-blue alert-icon"><i class="glyph-icon icon-info"></i></div>
+                        <div class="alert-content">
+                            <h4 class="alert-title">Unauthorized to access</h4>
+                            <p>Your travel details will be submitted by your contingent admin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  {% else %}
+    <div class="panel">
+      <div class="panel-body">
+          <h3 class="title-hero">Update your travel details</h3>
+  <div class="example-box-wrapper">
+              <form class="form-horizontal" method="post">
+                  {% csrf_token %}
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label" for="{{ form.arrival.id_for_label }}">Arrival:</label>
+                      <div class="col-sm-6">
+                        {{ form.arrival }}
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label" for="{{ form.departure.id_for_label }}">Departure:</label>
+                      <div class="col-sm-6">
+                        {{ form.departure }}
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label" for="{{ form.pnr.id_for_label }}">PNR:</label>
+                      <div class="col-sm-6">
+                        {{ form.pnr }}
+                      </div>
+                  </div>
+                  <div class="text-center pad20A mrg15T" style="margin-bottom: 50px !important;">
+                    <button class="btn btn-lg btn-info" id="submit">Submit</button>
+                  </div>
+              </form>
+          </div>
+    </div>
+  </div>
+  {% endif %}
+
+<script>
+  $('form').submit(function (e) {
+        e.preventDefault();
+        console.log($("form").serialize());
+        $("#submit").html("<div class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-4 icon-spin\" title=\"\" data-original-title=\"icon-spin-4\"></div>Validating Data");
+//         $("#loading").css('display','block');
+//         $("#loading").css('opacity','0.5');
+//         $("#loading").css('background','#000');
+
+        $.ajax({
+           url: 'validate/travel-details', /*change url here*/
+           cache: false,
+           data: $("form").serialize(),
+           type: 'POST',
+           success: function(data){
+               $("#submit").html("Update Information");
+                if(data === 'saved'){
+                  window.open('./dashboard');
+                }
+           },
+           error: function(data){
+               /*$("#submit").html("Update Information");
+               $("#loading").css('display','none');*/
+               console.log(data);
+             alert('Error');
+          }
+       });
+    });
+</script>
+
+
+{% endblock %}

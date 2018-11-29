@@ -1,0 +1,39 @@
+<div class="panel" id="todo">
+    <div class="panel-body">
+        <h3 class="content-box-header bg-blue text-left mrg20B"><i class="glyph-icon icon-comments"></i>&nbsp;&nbsp;Todo List</h3>
+        <div class="example-box-wrapper">
+            <ul class="todo-box">
+            {% if userdata.session_type != 1 %}
+                <li class="border-{% if userdata.stage %}green todo-done{% else %}red{% endif %}"> {# TODO: Change item content on basis of categories #}
+                    <label for="todo-1">Provide us with the additional info, we need from you.</label>
+                    <span class="bs-label bg-{% if userdata.stage %}green{% else %}red{% endif %}" title="">{% if userdata.stage %}Done{% else %}Overdue{% endif %}</span>
+                </li>
+            {% endif %}
+            {% if not userdata.session_type %}
+                <li class="border-blue {% if userdata.stage > 1 or userdata.contingent != 0 %}todo-done{% endif %}">
+                    <label for="todo-2">Group of 5 or more coming in summit? Create/Join a contingent to avail discount in fees. Visit FAQ section for more details</label>
+                    <span class="bs-label bg-blue" title="">Optional</span>
+                </li>
+            {% endif %}
+                <li class="border-{% if userdata.stage > 1 %}green todo-done{% else %}red{% endif %}">
+                    <label for="todo-3">Pay the Participation Fees</label>
+                    <span class="bs-label bg-{% if userdata.stage > 1%}green{% else %}red{% endif %}" title="">{% if userdata.stage > 1 %}Done{% else %}Pending{% endif %}</span>
+                </li>
+            {% if userdata.stage > 1 %}
+                <li class="border-purple">
+                    <label for="todo-3">Download Payment Receipt</label>
+                    <span class="bs-label bg-purple" title="">Available</span>
+                </li>
+            {% endif %}
+                <li class="border-{% if userdata.stage > 2 %}green todo-done{% else %}red{% endif %}">
+                    <label for="todo-4">Update Travel Details</label>
+                    <span class="bs-label bg-{% if userdata.stage > 2 %}green{% else %}red{% endif %}" title="">{% if userdata.stage > 2 %}Done{% else %}Pending{% endif %}</span>
+                </li>
+                <li class="border-black">
+                    <label for="todo-6">Download Participation Certificate</label>
+                    <span class="bs-label bg-black" title="">Enabled once summit is over</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

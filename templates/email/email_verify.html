@@ -1,0 +1,18 @@
+{# TODO: Upgrade this template include buttons instead of plain links and add css #}
+
+{% autoescape off %}
+Hi {{ userdata.name }},<br><br>
+
+Please click on the link below to confirm your registration:<br>
+http://{{ domain }}{% url 'activate' uid=uid token=token %}<br><br><br>
+
+    
+    Here are your login credentials:<br>
+    GES ID: {{ user.id }}<br>
+    Category: {{ userdata.category }}<br>
+    Email Address: {{ user.username }}<br>
+    Password: {{ password }}<br><br>
+
+    Thanks & Regards,<br>
+    Team Entrepreneurship Cell, IIT Kharagpur<br>
+{% endautoescape %}

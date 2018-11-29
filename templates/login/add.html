@@ -1,0 +1,93 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+    <div class="panel" id="errorMessage" style="display:none;">
+      <div class="panel-body">
+          <h3 class="title-hero">Resolve the following errors.</h3>
+          <div class="example-box-wrapper" id='errors'>
+          </div>
+      </div>
+  </div>
+
+<div class="panel" id="regForm">
+    <div class="panel-body"> 
+        <h3 class="title-hero">Add Members to your Contingent: GES 2019</h3>
+        <marquee style="margin:30px; color: red; font-size:16px">**All members must belong to same college/institution and should be either students or professors in order to create/join a contingent.</marquee>
+        <div class="example-box-wrapper">
+            <form class="form-horizontal" method="post">
+                {% csrf_token %}
+                <div id="sizeForm">
+                  <div class="form-group">
+                      <label class="col-sm-3 control-label" for="size_id">Number of members you wish to add:</label>
+                      <div class="col-sm-6">
+                        <input type="number" min="1" name="size" id="size_id" class="form-control" placeholder="Minimum 1" required>
+                      </div>
+                  </div>
+                  <div class="text-center pad20A mrg15T" style="margin-bottom: 50px !important;">
+                    <button class="btn btn-lg btn-info" id="submit_size">Next</button>
+                  </div>
+                </div>
+                <div id="membersForm" style="display: none">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+</script>
+<script>
+    $('#submit_size').click(function (e){
+      e.preventDefault();
+      $("#submit_size").html("<div class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-4 icon-spin\" title=\"\" data-original-title=\"icon-spin-4\"></div>Loading Form");
+      var size = $('#size_id').val();
+      var i = 1;
+      var formDiv = $('#membersForm');
+      for(i=1;i<=size;i++){
+       formDiv.append('<div class="form-group"><label class="col-sm-3 control-label" for="gesid_'+i+'">GES ID '+i+':</label><div class="col-sm-6"><input type="number" min="1" name="gesid_'+i+'" id="gesid_'+i+'" class="form-control" placeholder="GES ID '+i+'" required></div></div>');
+      }
+      formDiv.append('<div class="text-center pad20A mrg15T" style="margin-bottom: 50px !important;"><button class="btn btn-lg btn-info" id="submit">Add Members</button></div>');
+      $('#submit_size').remove();
+      $('#sizeForm').css('display', 'none');
+      formDiv.css('display', 'block');
+    });
+  
+    $('form').submit(function (e) {
+        $('#errors').empty();
+        $('#errorMessage').css('display', 'none');
+        e.preventDefault();
+        var data = $('form').serialize();
+        $("#submit").html("<div class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-4 icon-spin\" title=\"\" data-original-title=\"icon-spin-4\"></div>Validating Data");
+        $("#loading").css('display','block');
+        $("#loading").css('opacity','0.5');
+        $("#loading").css('background','#000');
+
+        $.ajax({
+           url: './validate',
+           cache: false,
+           data: data,
+           type: 'POST',
+           success: function(data){
+             console.log(data)
+               if (data['status']){
+                   console.log(data.id);
+                   window.open('../view-contingent', '_self');
+               } else{
+                 $('#errorMessage').css('display', 'block');
+                 $.each(data['errorMessage'], function(index, value){
+                    $('#errors').append('<div class="alert alert-danger"><div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div><div class="alert-content"><h4 class="alert-title">Exception</h4><p>'+value+'</p></div></div>');                 
+                 });
+               }
+               $("#submit").html("Update Information");
+               $("#loading").css('display','none');
+           },
+           error: function(data){
+               $("#submit").html("Update Information");
+               $("#loading").css('display','none');
+               console.log(data);
+          }
+       });
+    });
+</script>
+
+{% endblock %}

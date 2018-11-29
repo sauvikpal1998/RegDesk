@@ -1,0 +1,165 @@
+{% extends 'login/base.html' %}
+
+
+{% block content %}
+
+    <script type="text/javascript">/* Datatables responsive */
+        $(document).ready(function () {
+            $('.dataTables_filter input').attr("placeholder", "Search...");
+        });
+    </script>
+
+    <div class="row mailbox-wrapper">
+         <div class="col-md-8 col-md-offset-2">
+                <div class="example-box-wrapper">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <h3 class="content-box-header bg-purple text-left mrg25B"><i class="glyph-icon icon-group"></i>&nbsp;&nbsp;Contingent ID:&nbsp;{{ userdata.admin }}</h3>
+                            <div class="example-box-wrapper">
+                                <marquee style="margin:30px; color: red; font-size:16px">**Share Contingent Invite Link with your friends to add them into contingent.</marquee>
+                                <table class="table table-hover">
+                                    <tr>
+                                        <td></td>
+                                        <td><b>College</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.college }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>City</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.city }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Invite Link</b></td>
+                                        <td>:</td>
+                                        <td><a href="{{ contingent.link }}">{{ contingent.link }}</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Contingent Admin</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Contingent ID</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.admin }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Contingent Password</b></td>
+                                        <td>:</td>
+                                        <td>{{ contingent.captcha }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Participation Fees</b></td>
+                                        <td>:</td>
+                                        <td>{% if userdata.stage < 2 %}Not yet paid{% else %}Paid{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Contingent Size (Coming to attend GES)</b></td>
+                                        <td>:</td>
+                                        <td>{{ size }} <a href="#members">(View Members)</a></td>
+                                    </tr>
+                                    {% if userdata.stage > 1 %}
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Transaction ID</b></td>
+                                            <td>:</td>
+                                            <td>{{ payment.txn_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Amount</b></td>
+                                            <td>:</td>
+                                            <td>{{ payment.amount }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Paid On</b></td>
+                                            <td>:</td>
+                                            <td>{{ payment.timestamp }}</td>
+                                        </tr>
+                                    {% endif %}
+                                    {% if userdata.stage > 2 %}
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Arriving On</b></td>
+                                            <td>:</td>
+                                            <td>{{ travel.arrival }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Departure</b></td>
+                                            <td>:</td>
+                                            <td>{{ travel.departure }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>PNR Number</b></td>
+                                            <td>:</td>
+                                            <td>{{ travel.pnr }}</td>
+                                        </tr>
+                                    {% endif %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     </div>
+
+    <div class="panel" id="members" style="margin-bottom:70px">
+        <div class="panel-body"><h3 class="title-hero">Contingent Members</h3>
+            <div class="example-box-wrapper">
+                <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>GES ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>City</th>
+                        <th>College</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>GES ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>City</th>
+                        <th>College</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for data in members %}
+                        <tr>
+                            <td>{{ data.0.id }}</td>
+                            <td>{{ data.1.name }}</td>
+                            <td>{{ data.1.category }}</td>
+                            <td>{{ data.1.city }}</td>
+                            <td>{{ data.1.college }}</td>
+                            <td>
+                                {{ data.1.user }}&nbsp;&nbsp;
+                                <a title="Email {% if not user.is_active %}not {% endif %}Verified" href="#" class="{% if user.is_active %}green{% else %}red{% endif %}">
+                                    <i class="glyph-icon icon-{% if user.is_active %}check{% else %}exclamation{% endif %}-circle"></i>
+                                </a>
+                            </td>
+                            <td>{{ data.1.mobile }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

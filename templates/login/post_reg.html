@@ -1,0 +1,150 @@
+{% extends 'login/base.html' %}
+
+
+{% block content %}
+<style>
+        .form-group{
+            margin-top: 20px !important;
+            margin-bottom: 20px !important;
+        }
+ </style>
+
+<div class="panel">
+    <div class="panel-body">
+        <h3 class="title-hero">Additional Details: GES 2019</h3>
+        <div class="example-box-wrapper">
+            <form class="form-horizontal" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="{{ form.startup.id_for_label }}">Do you have a startup?</label>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            {% for type in form.startup %}
+                              <div class="col-sm-6">
+                                  <div class="radio-info">
+                                      {{ type }}
+                                  </div>
+                              </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group hidden" id="stage">
+                    <label class="col-sm-3 control-label" for="{{ form.stage.id_for_label }}">At what stage it is?</label>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            {% for type in form.stage %}
+                                <div class="col-sm-6">
+                                    <div class="radio-info">
+                                        {{ type }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group hidden" id="profile">
+                    <label class="col-sm-3 control-label" for="{{ form.profile.id_for_label }}">In what profile would like to intern?</label>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            {% for type in form.profile %}
+                              <div class="col-sm-6">
+                                  <div class="radio-info">
+                                      {{ type }}
+                                  </div>
+                              </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="{{ form.fav_startup.id_for_label }}">Which is your favorite startup and why? {Max 200 Character}</label>
+                    <div class="col-sm-6">
+                      {{ form.fav_startup }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="{{ form.inspiration.id_for_label }}">What inspires you towards entrepreneurship? {Max 200 Character}</label>
+                    <div class="col-sm-6">
+                      {{ form.inspiration }}
+                    </div>
+                </div>
+                <div class="text-center pad20A mrg15T" style="margin-bottom: 50px !important;">
+            <button class="btn btn-lg btn-info" id="submit">Update Information</button>
+        </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("[name='stage']").removeAttr('required');
+
+    $("[name='startup']").change(function () {
+        console.log('Entered');
+        const value = $(this).val();
+
+        if(value ==='True'){
+            $("#submit").removeClass('disabled');
+            $("[name='stage']").prop('required', 'required');
+            $("#stage").removeClass('hidden');
+            $("#profile").addClass('hidden');
+        } else{
+            $("#submit").addClass('disabled');
+            $("#profile").removeClass('hidden');
+            $("#stage").addClass('hidden');
+            $("[name='stage']").removeAttr('required');
+        }
+    });
+
+    $("[name='profile']").change(function () {
+        var count = 0;
+        var profile_set = [];
+        $("[name='profile']:checked").each(function () {
+            profile_set.push($(this).val());
+            count++;
+        });
+        if(count){
+            $("#submit").attr('class', 'btn btn-lg btn-info');
+        } else {
+            $("#submit").attr('class', 'btn btn-lg btn-info disabled');
+        }
+    });
+
+    $('form').submit(function (e) {
+        e.preventDefault();
+        var profile_set = [];
+        $("[name='profile']:checked").each(function () {
+            profile_set.push($(this).val());
+        });
+        console.log($("form").serialize());
+        console.log(profile_set);
+        $("#submit").html("<div class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-4 icon-spin\" title=\"\" data-original-title=\"icon-spin-4\"></div>Validating Data");
+        $("#loading").css('display','block');
+        $("#loading").css('opacity','0.5');
+        $("#loading").css('background','#000');
+
+        $.ajax({
+           url: 'validate/post-reg-regular',
+           cache: false,
+           data: $("form").serialize()+'&profile_set='+profile_set.join(', '),
+           type: 'POST',
+           success: function(data){
+               if (data === 'saved'){
+                   console.log(data);
+                   window.open('./', '_self');
+               } else{
+                   alert(data);
+               }
+               $("#submit").html("Update Information");
+               $("#loading").css('display','none');
+           },
+           error: function(data){
+               $("#submit").html("Update Information");
+               $("#loading").css('display','none');
+               console.log(data);
+          }
+       });
+    });
+</script>
+{% endblock %}

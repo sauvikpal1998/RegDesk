@@ -1,0 +1,302 @@
+{% extends 'login/base.html' %}
+
+
+{% block content %}
+    <style>
+        .form-group{
+            margin-top: 20px !important;
+            margin-bottom: 20px !important;
+        }
+    </style>
+
+    <form class="form-horizontal bordered-row" method="post">
+        {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body">
+                    <h3 class="title-hero">Additional Details: GES 2019</h3>
+                    <div class="example-box-wrapper">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.details.id_for_label }}">Details</label>
+                            <div class="col-sm-7">
+                              {{ form.details }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.website.id_for_label }}">Website</label>
+                            <div class="col-sm-7">
+                              {{ form.website }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.size.id_for_label }}">Team Size</label>
+                            <div class="col-sm-7">
+                              {{ form.size }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% if comeet %}
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body">
+                    <h3 class="title-hero">Co-Founder's Meet: GES 2019</h3>
+                    <div class="example-box-wrapper">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ comeet.comeet_idea.id_for_label }}">Do You have an idea for startup?</label>
+                            <div class="col-sm-7">
+                                <div class="row">
+                                    {% for option in comeet.comeet_idea %}
+                                        <div class="col-sm-6">
+                                            <div class="radio-info">
+                                                {{ option }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">You are good at:</label>
+                            <div class="col-sm-7">
+                                <div class="row">
+                                    {% for skill in comeet.comeet_skill_set %}
+                                    <div class="col-md-6">
+                                        <div class="checkbox checkbox-info">
+                                                {{ skill }}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if epitch %}
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body">
+                    <h3 class="title-hero">Elevator's Pitch: GES 2019</h3>
+                    <div class="example-box-wrapper">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_sector.id_for_label }}">Which sectors does your startup belong to ?</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_sector }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_problem.id_for_label }}">What are the problem you are solving or opportunity you are addressing?</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_problem }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_market.id_for_label }}">What markets are you going to target? How large do you think is the market opportunity?</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_market }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_revenue.id_for_label }}">Describe the Revenue Model (briefly)</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_revenue }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_compete.id_for_label }}">Who are you currently or in future likely to compete against? Why would consumers customers choose you over other options?</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_compete }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_funds.id_for_label }}">What would be the total investment and resources that you would need and what will you achieve with that? How do you intend raising that money?</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_funds }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ epitch.epitch_deck.id_for_label }}">Link to pitch deck.</label>
+                            <div class="col-sm-7">
+                              {{ epitch.epitch_deck }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if scamp %}
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body">
+                    <h3 class="title-hero">Startup Camp: GES 2019</h3>
+                    <div class="example-box-wrapper">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.startup_seedfund.id_for_label }}">Has your startup raised any kind of funding?</label>
+                            <div class="col-sm-7">
+                                <div class="row">
+                                    {% for option in scamp.startup_seedfund %}
+                                        <div class="col-sm-6">
+                                            <div class="radio-info">
+                                                {{ option }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.startup_stage.id_for_label }}">At what stage your startup is?</label>
+                            <div class="col-sm-7">
+                                <select class="custom-select stage" required>
+                                    {% for option in scamp.startup_stage.field.choices %}
+                                        <option value="{{ option.0 }}">{{ option.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.intern_number.id_for_label }}">Number of interns you wish to recruit?</label>
+                            <div class="col-sm-7">
+                              {{ scamp.intern_number }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.intern_description.id_for_label }}">Job Description of recruiting interns</label>
+                            <div class="col-sm-7">
+                              {{ scamp.intern_description }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.intern_profile.id_for_label }}">Internship Profile?</label>
+                            <div class="col-sm-7">
+                              {{ scamp.intern_profile }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.intern_stipend.id_for_label }}">Stipend Offered</label>
+                            <div class="col-sm-7">
+                              {{ scamp.intern_stipend }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.intern_duration.id_for_label }}">Duration of Internship</label>
+                            <div class="col-sm-7">
+                              {{ scamp.intern_duration }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ scamp.intern_location.id_for_label }}">Location of Internship</label>
+                            <div class="col-sm-7">
+                              {{ scamp.intern_location }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if pexpo %}
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-body">
+                    <h3 class="title-hero">Product Expo: GES 2019</h3>
+                    <div class="example-box-wrapper">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ pexpo.pexpo_type.id_for_label }}">Type of product.</label>
+                            <div class="col-sm-7">
+                                <div class="row">
+                                    {% for option in pexpo.pexpo_type %}
+                                        <div class="col-sm-6">
+                                            <div class="radio-info">
+                                                {{ option }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ pexpo.pexpo_details.id_for_label }}">Product Details</label>
+                            <div class="col-sm-7">
+                              {{ pexpo.pexpo_details }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ pexpo.pexpo_demo.id_for_label }}">Link to product demo.</label>
+                            <div class="col-sm-7">
+                              {{ pexpo.pexpo_demo }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    </div>
+
+        <div class="text-center pad20A mrg15T" style="margin-bottom: 50px !important;">
+            <button title="Fill in the form to enable submission." class="btn btn-lg btn-info {% if comeet %}disabled{% endif %}" id="submit">Update Information{% if comeet %} (Fill form to enable){% endif %}</button>
+        </div>
+    </form>
+
+    <script>
+        $("form").submit(function (e) {
+            e.preventDefault();
+            console.log($("form").serialize());
+            var skill_set = [];
+            $("[name='comeet_skill_set']:checked").each(function () {
+                skill_set.push($(this).val());
+            });
+            console.log(skill_set.join(','));
+
+            $("#submit").html("<div class=\"glyph-icon remove-border demo-icon tooltip-button icon-spin-4 icon-spin\" title=\"\" data-original-title=\"icon-spin-4\"></div>Validating Data");
+            $("#loading").css('display','block');
+            $("#loading").css('opacity','0.5');
+            $("#loading").css('background','#000');
+
+            $.ajax({
+               url: '/validate/post-reg-startup',
+               cache: false,
+               data: $("form").serialize()+'&startup_stage='+$('.stage').val()+'&skill_set='+skill_set.join(','),
+               type: 'POST',
+               success: function(data){
+                   if (data === 'saved'){
+                       window.open('./', '_self');
+                   } else{
+                       alert(data);
+                   }
+               },
+               error: function(data){
+                   console.log(data);
+              }
+           });
+
+        });
+        $("[name='comeet_skill_set']").change(function () {
+            var count = 0;
+            var skill_set = [];
+            $("[name='comeet_skill_set']:checked").each(function () {
+                skill_set.push($(this).val());
+                count++;
+            });
+            if(count){
+                $("#submit").attr('class', 'btn btn-lg btn-info');
+            } else {
+                $("#submit").attr('class', 'btn btn-lg btn-info disabled');
+            }
+        });
+    </script>
+
+{% endblock %}

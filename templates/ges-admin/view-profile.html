@@ -1,0 +1,153 @@
+{% extends 'ges-admin/base2.html' %}
+
+
+{% block content %}
+
+     <div class="row mailbox-wrapper">
+         <div class="col-md-8 col-md-offset-2">
+                <div class="example-box-wrapper">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <h3 class="content-box-header bg-purple text-left mrg25B"><i class="glyph-icon icon-comments"></i>&nbsp;&nbsp;{{ userdata.name }}'s Information</h3>
+                            <div class="example-box-wrapper">
+                                <table class="table table-hover">
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Name</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Category</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.category }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Status</b></td>
+                                        <td>:</td>
+                                        <td>{% if not userdata.stage %}Post Registration Process Not Started{% elif userdata.stage == 1 %}Payment Pending{% elif userdata.stage == 2 %}Payment Done{% else %}Process Completed{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Gender</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.gender }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Email</b></td>
+                                        <td>:</td>
+                                        <td>
+                                            {{ user.email }}&nbsp;&nbsp;
+                                            <a title="Email {% if not user.is_active %}not {% endif %}Verified" href="#" class="{% if user.is_active %}green{% else %}red{% endif %}">
+                                                <i class="glyph-icon icon-{% if user.is_active %}check{% else %}exclamation{% endif %}-circle"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Mobile Number</b></td>
+                                        <td>:</td>
+                                        <td>(+91)-{{ userdata.mobile }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>City</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.city }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>{% if userdata.category == 'Professional' or userdata.category == 'Startup' or userdata.category == 'Empresario Semi-Finalists'%}Company/Startup{% else %}College{% endif %}</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.college }}</td>
+                                    </tr>
+                                    {% if not userdata.session_type %}
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Contingent</b></td>
+                                        <td>:</td>
+                                        <td>{% if userdata.contingent %}Joined <a href="/admin-panel/view-contingent/{{userdata.contingent}}">(View Contingent)</a>{% else %}Not Joined any contingent{% endif %}</td>
+                                    </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <td></td>
+                                        <td><b>T-Shirt Size</b></td>
+                                        <td>:</td>
+                                        <td>{{ userdata.tshirt }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Participation Fees</b></td>
+                                        <td>:</td>
+                                        <td>{% if userdata.stage < 2 %}Not yet paid{% else %}Paid{% endif %}</td>
+                                    </tr>
+                                    {% if userdata.stage %}
+                                        {% if userdata.category == 'Startup' or userdata.category == 'Empresario Semi-Finalists' or userdata.contingent != 0 %}
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Team Size (Coming to attend GES)</b></td>
+                                            <td>:</td>
+                                            <td>{% if userdata.contingent %}{{ size}}{% else %}{{ post_reg.size }}{% endif %}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if userdata.category == 'Empresario Semi-Finalists' %}
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Accomodation Required</b></td>
+                                            <td>:</td>
+                                            <td>{{ post_reg.acco }}</td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if userdata.stage > 1 %}
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Transaction ID</b></td>
+                                            <td>:</td>
+                                            <td>{{ payment.txn_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Amount</b></td>
+                                            <td>:</td>
+                                            <td>{{ payment.amount }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Paid On</b></td>
+                                            <td>:</td>
+                                            <td>{{ payment.timestamp }}</td>
+                                        </tr>
+                                    {% endif %}
+                                    {% if userdata.stage > 2 %}
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Arriving On</b></td>
+                                            <td>:</td>
+                                            <td>{{ travel.arrival }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>Departure</b></td>
+                                            <td>:</td>
+                                            <td>{{ travel.departure }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>PNR Number</b></td>
+                                            <td>:</td>
+                                            <td>{{ travel.pnr }}</td>
+                                        </tr>
+                                    {% endif %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     </div>
+
+{% endblock %}

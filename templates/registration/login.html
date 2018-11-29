@@ -1,0 +1,80 @@
+{% extends "registration/base.html" %}
+
+{% block content %}
+    {% if error %}
+  <div class="panel">
+      <div class="panel-body">
+        <h3 class="title-hero">Resolve the following errors.</h3>
+        <div class="example-box-wrapper">
+            <div class="alert alert-danger">
+                <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                <div class="alert-content">
+                    <h4 class="alert-title">{{ error }}</h4>
+                    <p>{{ content }}</p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  <div class="panel">
+    <div class="panel-body">
+        <h3 class="title-hero">Login</h3>
+        <div class="example-box-wrapper">
+            <form class="form-horizontal bordered-row" method="post" action="/login/">
+                {% csrf_token %}
+                  {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                  {% endif %}
+                    <input type="hidden" name="category" id="category" value="">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="id_category">Select Your Category</label>
+                    <div class="col-sm-6">
+                        <select class="custom-select category" required>
+                            <option selected disabled value="">Select Your Category</option>
+                            {% for option in form.category.field.choices %}
+                                <option value="{{ option.0 }}">{{ option.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br>
+
+                <div id="mainForm">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="{{ form.username.id_for_label }}">Email</label>
+                        <div class="col-sm-6">
+                          {{ form.username }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="{{ form.password.id_for_label }}">Password</label>
+                        <div class="col-sm-6">
+                          {{ form.password }}
+                        </div>
+                    </div>
+                    <div class="bg-default text-center pad20A mrg25T">
+                        <button class="btn btn-lg btn-info" id="submit">Login</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+   </div>
+   <script>
+    $('form').each(function() { this.reset() });
+    $("input").addClass("form-control");
+    $("#id_username").attr("placeholder", "Enter Your Email Address");
+    $("#id_username").attr("type", "email");
+    $("#id_password").attr("placeholder", "Enter Your Password");
+    $(".category").change(function () {
+        $("#category").attr("value", $(this).val());
+        $(this).change(function(){
+            window.location.reload();
+        });
+        $(this).prop("disabled", "disabled");
+        $("#mainForm").css("display", "block");
+    });
+   </script>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'registration/base.html' %}
+
+{% block content %}
+<div class="example-box-wrapper">
+    <div class="col-sm-9">
+        <div class="content-box border-top border-red">
+            <h3 class="content-box-header clearfix">Verification Falied
+                <small>(Invalid Token)</small>
+            </h3>
+            <div class="content-box-wrapper">
+                <p class="font-size-16"><b>Your email verification failed due to the below mentioned reasons:</b></p>
+                <div class="divider"></div>
+                <p class="font-size-15"><b>1.</b> Red highlighted part of verification link is invalid. Please cross check it.</p>
+                <a class="font-size-14 font-blue mrg20L" href="{% url 'activate' uid=uid token=token %}">http://{{ domain }}/activate/{{ uid }}/<span class="font-red">{{ token }}</span>/</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

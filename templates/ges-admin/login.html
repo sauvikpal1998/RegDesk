@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <title>GES | Administration</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/base.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/login.css' %}"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/responsive.css' %}"/>
+    <script type="text/javascript" src="{% static '/assets/js-core/jquery-core.js' %}"></script>
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+
+    <style>
+        #id_city{
+            clear: both;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hidden{
+            display: none;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+
+<body class=" login" data-admin-utc-offset="0">
+    <div id="container">
+        <div id="header">
+            <div id="branding">
+                <h1 id="site-name"><a href="/admin/">E-Cell Administration</a></h1>
+            </div>
+        </div>
+        <div id="content" class="colM">
+            {% if error %}
+                <p class="errornote">
+                    Please enter the correct username and password for a staff account. Note that both fields may be case-sensitive.
+                </p>
+            {% endif %}
+            {% if not_valid %}
+                <p class="errornote">
+                    You are authenticated as {{ not_valid }}, but are not authorized to access this page. Would you like to login to a different account?
+                </p>
+            {% endif %}
+            <div id="content-main">
+                <form action="{% url 'admin_login' %}" method="post" id="login-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label class="required" for="{{ form.username.id_for_label }}">Username:</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="form-row">
+                        <label class="required" for="{{ form.password.id_for_label }}">Password:</label>
+                        {{ form.password }}
+                        {% if next %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
+                    </div>
+                    <div class="form-row hidden" id="city">
+                        <label class="col-sm-3 control-label" for="{{ form.city.id_for_label }}">City</label>
+                        <div class="col-sm-12">
+                            <select name="city" class="city">
+                                <option selected disabled>Select Your City</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="submit-row">
+                        <label>&nbsp;</label><input type="submit" id='submit' value="Log in"/>
+                    </div>
+                </form>
+            </div>
+            <br class="clear"/>
+        </div>
+        <div id="footer"></div>
+    </div>
+
+    <script>
+    $('form').each(function() { this.reset() });
+
+    $("#id_username").keyup(function () {
+        const username = $(this).val();
+        if (username === 'ges_intern'){
+            $("#city").removeClass('hidden');
+            $("#id_city").prop('required', 'required');
+        } else{
+            $("#city").addClass('hidden');
+            $("#id_city").removeAttr('required');
+        }
+    });
+    </script>
+
+    <script>
+       $.ajax({
+           url: '/register/city',
+           cache: false,
+           data: $("form").serialize(),
+           type: 'POST',
+           success: function(data){
+               $(".city").append(data);
+           },
+           error: function(data){
+               alert('Unable to fetch city list due to internet connectivity issues.');
+           }
+       });
+    </script>
+
+</body>
+</html>

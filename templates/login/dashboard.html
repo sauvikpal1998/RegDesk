@@ -1,0 +1,162 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+
+     <div class="row mailbox-wrapper">
+         <div class="col-md-5">
+            <div class="panel-layout">
+                <div class="panel-box">
+                    <div class="panel-content image-box">
+                        <div class="ribbon">
+                            <div class="bg-primary">GES 2019</div>
+                        </div>
+                        <div class="image-content font-white">
+                            <div class="meta-box meta-box-bottom">
+                                {% load static %}
+                                <img src="{% static '/assets/image-resources/gravatar.jpg' %}" alt="" class="meta-image img-bordered img-circle">
+                                <h3 class="meta-heading">GES 2019 Logo to come in background div</h3>
+                            </div>
+                        </div>
+                        {% load static %}
+                        <img src="{% static '/assets/image-resources/blurred-bg/blurred-bg-13.jpg' %}" alt=""></div>
+                    <div class="panel-content pad15A bg-white radius-bottom-all-4">
+                        <div class="clear profile-box">
+                            <ul class="nav nav-pills nav-justified">
+                                <!--TODO: Add FB, Insta & Linkedin Follow Button-->
+                                <li>
+                                  <a href="https://facebook.com/ecell.iitkgp" target="_blank" class="btn btn-sm bg-facebook">
+                                    <span class="glyph-icon icon-separator"><i class="glyph-icon icon-facebook"></i></span> 
+                                    <span class="button-content">Facebook</span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="https://instagram.com/ecellkgp" target="_blank" class="btn btn-sm" style="background:#e4405f">
+                                    <span class="glyph-icon icon-separator"><i class="glyph-icon icon-instagram"></i></span>
+                                    <span class="button-content">Instagram</span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="https://www.linkedin.com/company/entrepreneurship-cell-iit-kharagpur/" target="_blank" class="btn btn-sm" style="background:#0077B5">
+                                    <span class="glyph-icon icon-separator"><i class="glyph-icon icon-linkedin"></i></span>
+                                    <span class="button-content">Linkedin</span>
+                                  </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mrg15T mrg15B"></div>
+                        <blockquote class="font-gray">
+                            <p style="color: #a0a0a0">Follow us on following social media platform to get regular updates regarding Global Entrepreneurship Summit, 2019</p>
+                            <small class="mrg10T" style="color: black;">Team, Entrepreneurship Cell, IIT Kharagpur</small>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+             {% include 'login/todo.html' %}
+         </div>
+         <div class="col-md-7">
+              <div class="example-box-wrapper">
+                  <div class="panel">
+                      <div class="panel-body">
+                          <h3 class="title-hero"><a><span class="small-badge bg-yellow"></span><i class="glyph-icon icon-linecons-megaphone"></i></a>&nbsp;&nbsp;Updates</h3>
+                          <div class="example-box-wrapper">
+                              {% if userdata.contingent %}
+                              <div class="alert alert-notice">
+                                  <div class="bg-blue alert-icon"><i class="glyph-icon icon-info"></i></div>
+                                  <div class="alert-content"><h4 class="alert-title">You are a part of contingent.</h4>
+                                      <p>Further Registration Process will be carried out by your contingent admin.</p>
+                                  </div>
+                              </div>
+                              {% endif %}
+                              <div class="alert alert-warning">
+                                  <div class="bg-orange alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                                  <div class="alert-content"><h4 class="alert-title">Early Bird Deadline Approaching.</h4>
+                                      <p>Pay participation fees before early bird deadline to avail discount in participation fees.</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="panel">
+                      <div class="panel-body">
+                          <h3 class="content-box-header bg-purple text-left mrg25B"><i class="glyph-icon icon-comments"></i>&nbsp;&nbsp;Participant's Information</h3>
+                          <div class="example-box-wrapper">
+                              <table class="table table-hover">
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Name</b></td>
+                                      <td>:</td>
+                                      <td>{{ userdata.name }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Category</b></td>
+                                      <td>:</td>
+                                      <td>{{ userdata.category }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Gender</b></td>
+                                      <td>:</td>
+                                      <td>{{ userdata.gender }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Email</b></td>
+                                      <td>:</td>
+                                      <td>{{ user.email }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Mobile Number</b></td>
+                                      <td>:</td>
+                                      <td>(+91)-{{ userdata.mobile }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>City</b></td>
+                                      <td>:</td>
+                                      <td>{{ userdata.city }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>{% if userdata.category == 'Professional' or userdata.category == 'Startup' or userdata.category == 'Empresario Semi-Finalists'%}Company/Startup{% else %}College{% endif %}</b></td>
+                                      <td>:</td>
+                                      <td>{{ userdata.college }}</td>
+                                  </tr>
+                                  {% if userdata.category == 'Startup' or userdata.category == 'Empresario Semi-Finalists' or userdata.contingent != 0 %}
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Team Size (Coming to attend GES)</b></td>
+                                      <td>:</td>
+                                      <td>{{ teamsize }}</td>
+                                  </tr>
+                                  {% endif %}
+                                  <tr>
+                                      <td></td>
+                                      <td><b>T-Shirt Size</b></td>
+                                      <td>:</td>
+                                      <td>{{ userdata.tshirt }}</td>
+                                  </tr>
+                                  <tr>
+                                      <td></td>
+                                      <td><b>Participation Fees</b></td>
+                                      <td>:</td>
+                                      <td>{% if userdata.stage < 2 %}Not yet paid{% else %}Paid{% endif %}</td>
+                                  </tr>
+                                  {% if userdata.stage > 1 %}
+                                      <tr>
+                                          <td></td>
+                                          <td><b>Transaction ID</b></td>
+                                          <td>:</td>
+                                          <td>Payment Transaction ID</td>
+                                      </tr>
+                                  {% endif %}
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+         </div>
+     </div>
+
+{% endblock %}

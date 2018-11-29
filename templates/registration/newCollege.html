@@ -1,0 +1,121 @@
+{% extends 'registration/base.html' %}
+
+{% block content %}
+    <style>
+        .form-group{
+            margin-bottom: 25px !important;
+        }
+    </style>
+{% if error or success %}
+    <div class="panel">
+        <div class="panel-body">
+                {% if error %}
+                    <h3 class="title-hero">Resolve the following errors.</h3>
+                    <div class="example-box-wrapper">
+                    <div class="alert alert-danger" id="categoryError">
+                    <div class="bg-red alert-icon"><i class="glyph-icon icon-warning"></i></div>
+                    <div class="alert-content">
+                        <h4 class="alert-title">{{ error }}</h4>
+                        <p>{{ content }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% if success %}
+                    <div class="example-box-wrapper">
+                    <div id="regSuccess" class="col-sm-9">
+                    <div class="content-box border-top border-green">
+                        <h3 class="content-box-header clearfix">Registration Successful
+                            <small>(Post Registration Process)</small>
+                        </h3>
+                        <div class="content-box-wrapper">
+                            <p>Voila! You have successfully registered for GES 2019. An Email will be sent to your registered email address.</p>
+                            <div class="divider"></div>
+                            <p>We will be verifying the contact details.</p>
+                            <div class="divider"></div>
+                            <p>If the verification is successful, you will be able to register.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+    <div class="panel">
+        <div class="panel-body">
+            <h3 class="title-hero font-size-16">Request Invite to College: GES 2019</h3>
+            <h3 class="title-hero font-red font-size-13 mrg25B">All the fields are mandatory since the Invite will be sent to the highest authority of the college</h3>
+            <div class="example-box-wrapper">
+                <form class="form-horizontal bordered-row" method="post" action="{% url 'newCollege' %}">
+                    {% csrf_token %}
+                    <div id="main">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.name.id_for_label }}">Name</label>
+                            <div class="col-sm-6">
+                                {{ form.name }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.gender.id_for_label }}">Gender</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="radio-info">
+                                      {{ form.gender }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.city.id_for_label }}">City</label>
+                            <div class="col-sm-6">
+                                  {{ form.city }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.college.id_for_label }}">College</label>
+                            <div class="col-sm-6">
+                                {{ form.college }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.year_for_study.id_for_label }}">Year of Study</label>
+                            <div class="col-sm-6">
+                                {{ form.year_of_study }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.email.id_for_label }}">Email</label>
+                            <div class="col-sm-6">
+                              {{ form.email }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.mobile.id_for_label }}">Mobile Number</label>
+                            <div class="col-sm-6">
+                              {{ form.mobile }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.contact_dean.id_for_label }}">Contact Details (Dean /Director/Higher Authority)</label>
+                            <div class="col-sm-6">
+                              {{ form.contact_dean }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="{{ form.contact_ecell.id_for_label }}">Contact details ( Professor-in-charge(E-cell) / Related to Entrepreneurship)</label>
+                            <div class="col-sm-6">
+                              {{ form.contact_ecell }}
+                          </div>
+                        </div>
+                        <div class="bg-default content-box text-center pad20A mrg25T">
+                            <button class="btn btn-lg btn-info" id="submit">Request Invite</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('form').each(function() { this.reset() });
+    </script>
+{% endblock %}

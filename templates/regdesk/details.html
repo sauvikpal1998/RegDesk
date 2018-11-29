@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <title>GES | Administration</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/base.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/login.css' %}"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/responsive.css' %}"/>
+    <script type="text/javascript" src="{% static '/assets/js-core/jquery-core.js' %}"></script>
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+
+    <style>
+        #id_city{
+            clear: both;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hidden{
+            display: none;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+
+<body class=" login" data-admin-utc-offset="0">
+    <div id="container">
+        <div id="header">
+            <div id="branding">
+                <h1 id="site-name"><a href="/admin/">E-Cell Administration</a></h1>
+            </div>
+        </div>
+        <div id="content" class="colM">
+        <form action='{% url  "hall_allotment" %}' method='GET'>
+        {% csrf_token %}
+          
+        <p>
+        Male students : {{male_num}}  
+        </p>
+        
+        {% for student in students_male %}
+        <p>
+          <input type='checkbox' name='{{student.pk}}' value = '1'>{{student.name}}</input>
+        </p>
+        <p>
+        {{student.category}}
+        </p>
+  <br>
+        {% endfor %}
+          
+        <p>
+        Female students : {{female_num}}  
+        </p> 
+          
+        {% for student in students_female %}
+        <p>
+        <input type='checkbox' name='{{student.pk}}' value = '1'>{{student.name}}</input>
+        </p>
+        <p>
+        {{student.category}}
+        </p>
+        {% endfor %}
+         
+        </div>
+        <input type='hidden' name='c_id' value='{{captcha}}'>
+        <input type='submit'>
+        </form>
+        <div id="footer"></div>
+    </div>
+
+
+</body>
+</html>
