@@ -18,16 +18,20 @@ def contingent_id(request):
     
     students_male = students.filter(gender='M')
     male_num = students_male.count()
+    male_halls = Hall.objects.filter(gender = 'M')
     
     students_female = students.filter(gender='F')
     female_num = students.filter(gender='F').count()
-    
+    female_halls = Hall.objects.filter(gender = 'F')
+
     context = {
       'students_male' : students_male,
       'students_female' : students_female,
       'male_num' : male_num,
       'female_num' : female_num,
       'captcha' : con_id,
+      'female_halls' : female_halls,
+      'male_halls' : male_halls,
     }
     
   return render(request, 'regdesk/details.html', context)
@@ -47,9 +51,11 @@ def hall_allotment(request):
         obj.name = student.user
         
         if (student.gender == "M"):
-          obj.hall = Hall.objects.get(pk=1)
+          hall = request.GET.get("m_hall")
+          obj.hall = Hall.objects.get(name=hall)
         else:
-          obj.hall = Hall.objects.get(pk=2)
+          hall = request.GET.get("f_hall")
+          obj.hall = Hall.objects.get(name=hall)
         
         obj.save()
         

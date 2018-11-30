@@ -25,7 +25,7 @@ SECRET_KEY = 'x!g@*dv^e2vt9cucvnw4zv&56ntd0(_j2##llk6e7^eah4io!w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['reg-ges.ecell-iitkgp.org','www.reg-ges.ecell-iitkgp.org']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -79,20 +79,26 @@ WSGI_APPLICATION = 'regportal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ges_2019',
+#         'HOST': 'mysql.ecell-iitkgp.org',
+#         'PORT': '3306',
+#         'USER': 'ecellkgp',
+#         'PASSWORD': 'www-ecell',
+#         'OPTIONS' : {
+#           'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ges_2019',
-        'HOST': 'mysql.ecell-iitkgp.org',
-        'PORT': '3306',
-        'USER': 'ecellkgp',
-        'PASSWORD': 'www-ecell',
-        'OPTIONS' : {
-          'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

@@ -49,6 +49,7 @@
         <p>
         {{student.category}}
         </p>
+         
   <br>
         {% endfor %}
           
@@ -63,8 +64,24 @@
         <p>
         {{student.category}}
         </p>
+        
+        
+
         {% endfor %}
-         
+        <p>Male Hall</p>
+        <select name="m_hall">
+            {% for hall in male_halls %}
+                <option value='{{hall.name}}'>{{hall.name}}<option>
+            {% endfor %}
+        </select>
+
+        <p>Female Hall</p>
+        <select name="f_hall">
+            {% for hall in female_halls %}
+                <option value='{{hall.name}}'>{{hall.name}}<option>
+            {% endfor %}
+        </select> 
+
         </div>
         <input type='hidden' name='c_id' value='{{captcha}}'>
         <input type='submit'>
