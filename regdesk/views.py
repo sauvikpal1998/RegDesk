@@ -16,6 +16,15 @@ def contingent_id(request):
     contingent_pk = Contingent.objects.get(captcha=con_id).pk
     students = Data.objects.filter(contingent=contingent_pk)
     
+    checkedIn = []
+    allotment_list = [obj.name for obj in Allotment.objects.all()]
+    for student in students:
+      if student.user in allotment_list:
+        checkedIn.append(student)
+
+    checkedIn_user = [obj.user for obj in checkedIn]
+
+    students = students.exclude(user__in=checkedIn_user)
     students_male = students.filter(gender='M')
     male_num = students_male.count()
     male_halls = Hall.objects.filter(gender = 'M')
@@ -23,6 +32,8 @@ def contingent_id(request):
     students_female = students.filter(gender='F')
     female_num = students.filter(gender='F').count()
     female_halls = Hall.objects.filter(gender = 'F')
+
+    
 
     context = {
       'students_male' : students_male,
@@ -32,6 +43,7 @@ def contingent_id(request):
       'captcha' : con_id,
       'female_halls' : female_halls,
       'male_halls' : male_halls,
+      'checkedIn' : checkedIn,
     }
     
   return render(request, 'regdesk/details.html', context)

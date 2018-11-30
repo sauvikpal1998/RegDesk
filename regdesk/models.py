@@ -16,6 +16,7 @@ class Hall(models.Model):
 class Allotment(models.Model):
   name = models.OneToOneField(User, on_delete=models.CASCADE)
   hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
-  
+
   def __str__(self):
         return str(self.name) + " " + str(self.hall)
+

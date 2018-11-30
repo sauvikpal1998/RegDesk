@@ -143,5 +143,5 @@ LOGIN_REDIRECT_URL = '/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'https://reg-ges.ecell-iitkgp.org/static/'
 STATIC_ROOT = os.path.dirname(BASE_DIR) + '/static/'

@@ -82,6 +82,10 @@
             {% endfor %}
         </select> 
 
+        <p>Check in</p>
+        {% for names in checkedIn %}
+        <p>{{names.name}}</p>
+        {% endfor %}
         </div>
         <input type='hidden' name='c_id' value='{{captcha}}'>
         <input type='submit'>

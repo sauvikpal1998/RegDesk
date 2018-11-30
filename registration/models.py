@@ -1,5 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from regdesk.models import Allotment
+
+class DataAllotmentManager(models.Manager):
+    def checkedIn(self):
+        # obj = super(DataAllotmentManager, self)
+        names = []
+        for data in Allotment.objects.all():
+            names.append(data.name)
+        if self.user not in names:
+            return obj
+        else:
+            return None
 
 
 class College(models.Model):
@@ -40,6 +52,8 @@ class Data(models.Model):
     contingent = models.IntegerField(blank=True, null=True, default=None)     # store contingent id if part of any contingent else None
     admin = models.IntegerField(default=0)     # contingent id if user is contingent admin else 0
     session_type = models.IntegerField(default=0)                #Set user session type to easily play with ui, 0 for all ui based views, -1 for only info view and 1 for no additional info view & contingent
+
+    objects = DataAllotmentManager()
 
     def __str__(self):
         return self.name
