@@ -1,0 +1,100 @@
+{% if student.category == 'Empresario Semi-Finalists' or student.category == 'Startup' %}
+    {% if not checkedIn %}
+        <p>Team Size: {{teamsize}}</p>
+        <p></p>
+        <form action='{% url  "empstartup" %}' method='GET'>
+            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+            {% csrf_token %}
+            <p>{{student.category}}<br>{{student.name}}</p>
+            <div class="form-row">
+
+            <p><input type='hidden' name='est_id' value = '{{student.user.pk}}'></p>
+            <p><input type="number" name='male_num' value="1"></p>
+            <p><input type="number" name='female_num' value="0"></p>
+            <p>Male Hall</p>
+            <select name="m_hall">
+                    <option default value='None'>Select</option>
+                {% for hall in male_halls %}
+                    <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                {% endfor %}
+            </select>
+            <p>Female Hall</p>
+            <select name="f_hall">
+                    <option default value='None'>Select</option>
+                {% for hall in female_halls %}
+                    <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                {% endfor %}
+            </select>
+</div>
+<div class="submit-row">
+
+            <input type='submit'value='CheckIn'>
+</div>
+        </form>
+    {% else %}
+        <form action='{% url  "checkout" %}' method='GET'>
+                                            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+            {% csrf_token %}
+            <div class="form-row">
+                    <p>{{student.name}}</p>
+                    <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+            <p>{{student.category}}</p>
+            <p>Hall: {{checkedIn.male_hall }} and {{checkedIn.female_hall}}</p>
+            <p>Size: {{ checkedIn.male_num}}M and {{checkedIn.female_num }}F</p>
+        </div>
+            <div class="submit-row">
+            <input type="submit" id='submit' value="CheckOut All"/>
+                </div>
+        </form>
+    {% endif %}
+{% else %}
+    {% if not checkedIn %}
+        <form action='{% url "professional" %}' method='GET'>
+                                            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+            {% csrf_token %}
+            <div class="form-row">
+                <p>{{student.name}}</p>
+            <p><input type='hidden' name='p_id' value = '{{student.user.pk}}'></p>
+            <p>{{student.category}}</p>
+            {% if student.gender == 'M' %}
+                <p>Male Hall</p>
+                <select name="hall">
+                        <option default>Select</option>
+                    {% for hall in male_halls %}
+                        <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <p>Female Hall</p>
+                <select name="hall">
+                        <option default>Select</option>
+                    {% for hall in female_halls %}
+                        <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+            </div>
+            <div class="submit-row">
+            <input type='submit'value='CheckIn'>
+            </div>
+        </form>
+    {% else %}
+        <form action='{% url  "checkout" %}' method='GET'>
+                                            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+            {% csrf_token %}
+            <div class="form-row">
+                    <p>{{student.name}}</p>
+                    <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+            <p>{{student.category}}</p>
+            <p>Hall: {{checkedIn.male_hall }}{{checkedIn.female_hall}}</p>
+            </div>
+            <div class="submit-row">
+            <input type='submit'value='checkout'>
+            </div>
+        </form>
+    {% endif %}
+{% endif %}

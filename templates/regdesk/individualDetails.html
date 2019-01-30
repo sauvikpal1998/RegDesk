@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <title>GES | Administration</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/base.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/login.css' %}"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/responsive.css' %}"/>
+    <script type="text/javascript" src="{% static '/assets/js-core/jquery-core.js' %}"></script>
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+
+    <style>
+        #id_city{
+            clear: both;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hidden{
+            display: none;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+
+<body class=" login" data-admin-utc-offset="0">
+    <div id="container">
+        <div id="header">
+            <div id="branding">
+                <h1 id="site-name"><a href="{% url 'regdesk_dashboard' %}">E-Cell Administration</a></h1>
+            </div>
+        </div>
+        <div id="content" class="colM">
+        {% if error %}
+            <p>{{ error }}</p>
+        {% else %}
+
+            {% if not student.session_type %} <!-- For student contingents -->
+                {% if student.contingent %}
+                    <p> {{student.name}} Part of Contingent Number {{student.contingent}} (Captcha: {{conCaptcha}})</p>
+                    <form action="{% url 'contingent_details' %}" method="GET" id="login-form">
+                                        <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+    
+                        {% csrf_token %}
+                            <div class="form-row">
+                                <label class="required">Contingent Captcha:</label>
+                                <input type='text' name='c_id' id='c_id' value=""placeholder='Contingent Captcha'>
+                            </div>
+                            <div class="submit-row">
+                                <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
+                            </div>
+                    </form>
+                {% else %}
+                    {% if not student.stage > 1 %}
+                    <h1 style="color:red">**Payment Not Done. Collect Fees</h1>
+                    <form action='{% url "offlinepay" %}' method="POST">
+                                        <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <p> <input type='hidden' name='uid' value="{{ student.user.pk }}"></p>
+                            <p> <label>Amount</label> <input type='text' name='amount'/></p>
+                            <p> <label>Method</label> <input type="text" name='way'/></p>
+                        </div>
+                        <div class="submit-row">
+                            <input type="submit" value="Register Payment">
+                        </div>
+                    </form>
+                    {% else %}
+                    <h1>Payment done already</h1>
+                    {% endif %}
+                    <hr><br><br>
+
+                    {% if not checkedIn %}
+                        <form action='{% url  "individual" %}' method='GET'>
+                                            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+                            {% csrf_token %}
+                            <div class="form-row">
+                            <p>{{student.name}}</p>
+                            <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+                            <p>{{student.category}}</p>
+                            {% if student.gender == 'M' %}
+                                <p>Male Hall</p>
+                                <select name="hall">
+                                        <option default>Select</option>
+                                    {% for hall in male_halls %}
+                                        <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <p>Female Hall</p>
+                                <select name="hall">
+                                        <option default>Select</option>
+                                    {% for hall in female_halls %}
+                                        <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                                </div>
+                            <div class="submit-row">
+                            <input type='submit'value='CheckIn'>
+                            </div>
+                        </form>
+                    {% else %}
+                        <form action='{% url  "checkout" %}' method='GET'>
+                                            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+                            {% csrf_token %}
+                            <p>{{student.name}}</p>
+                            <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+                            <p>{{student.category}}</p>
+                            <p>Hall: {{checkedIn.male_hall }} / {{checkedIn.female_hall}}</p>
+                            <input type='submit'value='CheckOut'>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% if not student.stage > 1 %}
+                <h1 style="color:red">**Payment Not Done. Collect Fees</h1>
+                <form action='{% url "offlinepay" %}' method="POST">
+                                    <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+                    {% csrf_token %}
+                    <div class="form-row">
+                            <p> <input type='hidden' name='uid' value="{{ student.user.pk }}"></p>
+                            <p> <label>Amount</label> <input type='text' name='amount'/></p>
+                            <p> <label>Method</label> <input type="text"name='way'/></p>
+                        </div>
+                    <div class="submit-row">
+                        <input type="submit" value="Register Payment">
+                    </div>
+                </form>
+                {% else %}
+                <h1>Payment done already</h1>
+                {% endif %}
+                <hr><br><br>
+
+                <p>
+                    {% include './other.html' %}
+                </p>
+            {% endif %}
+        {% endif %}
+        </div>
+        <div id="footer"></div>
+    </div>
+
+
+</body>
+</html>

@@ -35,64 +35,139 @@
             </div>
         </div>
         <div id="content" class="colM">
-        <form action='{% url  "hall_allotment" %}' method='GET'>
-        {% csrf_token %}
-          
-        <p>
-        Male students : {{male_num}}  
-        </p>
-        
-        {% for student in students_male %}
-        <p>
-          <input type='checkbox' name='{{student.pk}}' value = '1'>{{student.name}}</input>
-        </p>
-        <p>
-        {{student.category}}
-        </p>
-         
-  <br>
-        {% endfor %}
-          
-        <p>
-        Female students : {{female_num}}  
-        </p> 
-          
-        {% for student in students_female %}
-        <p>
-        <input type='checkbox' name='{{student.pk}}' value = '1'>{{student.name}}</input>
-        </p>
-        <p>
-        {{student.category}}
-        </p>
-        
-        
+            <form action='{% url  "hall_allotment" %}' method='GET'>
+                                <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+                {% csrf_token %}
+                <div class='form-row'>
+                        <p><input type="checkbox" id="checkinAll" >Select All</p>
 
-        {% endfor %}
-        <p>Male Hall</p>
-        <select name="m_hall">
-            {% for hall in male_halls %}
-                <option value='{{hall.name}}'>{{hall.name}}<option>
-            {% endfor %}
-        </select>
+                    <p>
+                    Male students : {{male_num}}  
+                    </p>
+                
+                    {% for student in students_male %}
+                    <p>
+                    <input class='checkinbox' type='checkbox' name='{{student.pk}}' value = '1'>{{student.name}}:  {{student.category}}
+                    </p>
+                    {% endfor %}
+            
+                    <p>
+                    Female students : {{female_num}}  
+                    </p> 
+                    
+                    {% for student in students_female %}
+                    <p>
+                    <input class='checkinbox' type='checkbox' name='{{student.pk}}' value = '1'>{{student.name}}:  {{student.category}}
+                    </p>
 
-        <p>Female Hall</p>
-        <select name="f_hall">
-            {% for hall in female_halls %}
-                <option value='{{hall.name}}'>{{hall.name}}<option>
-            {% endfor %}
-        </select> 
+                    {% endfor %}
+                    <p>Male Hall</p>
+                    <select name="m_hall">
+                        {% for hall in male_halls %}
+                            <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                        {% endfor %}
+                    </select>
 
-        <p>Check in</p>
-        {% for names in checkedIn %}
-        <p>{{names.name}}</p>
+                    <p>Female Hall</p>
+                    <select name="f_hall">
+                        {% for hall in female_halls %}
+                            <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
+                        {% endfor %}
+                    </select> 
+                </div>
+                <input type='hidden' name='c_id' value='{{captcha}}'>
+                <div class='submit-row'><input type='submit' value="CheckIn"></div>
+        
+            </form>
+<br><hr><br>
+        <p>Checked in: Info</p>
+
+        <form method='POST' action = '{% url "con_checkout" %}'>
+                <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+            {% csrf_token %}
+        <input type='hidden' name='c_id' value='{{captcha}}'>
+        <div class="form-row">
+                <p><input type="checkbox" id="checkoutAll" >Select All</p>
+
+        {% for stu in checkedIn %}
+        <p><input class="checkoutbox" type='checkbox' name='{{stu.pk}}' value = 'out'>{{stu.name}}: {{stu.category}}</p>
         {% endfor %}
         </div>
-        <input type='hidden' name='c_id' value='{{captcha}}'>
-        <input type='submit'>
-        </form>
+        <div class='submit-row'><input type='submit' value="Checkout"></div>
+        
+    </form>
+
+    </div>
         <div id="footer"></div>
     </div>
+<script>
+$(document).ready(()=>{
+   /* $('#checkinAll').click(()=>{
+        console.log("just for check")
+        if(this.checked){
+            $('.checkinbox').each(function(){
+                this.checked = true;
+            })
+        }
+        else{
+            $('.checkinbox').each(function(){
+                this.checked = false;
+            })
+        }
+    })
 
+    $('#checkoutAll').click(()=>{
+        if(this.checked){
+            $('.checkoutbox').each(function(){
+                this.checked = true;
+            })
+        }
+        else{
+            $('.checkoutbox').each(function(){
+                this.checked = false;
+            })
+        }
+    })*/
+
+
+        $('#checkinAll').click(function(){
+            if($(this).prop("checked")) {
+                $(".checkinbox").prop("checked", true);
+            } else {
+                $(".checkinbox").prop("checked", false);
+            }                
+        });
+
+
+        $('.checkinbox').click(function(){
+            if($(".checkinbox").length == $(".checkinbox:checked").length) {
+                $("#checkinAll").prop("checked", true);
+            }else {
+                $("#checkinAll").prop("checked", false);            
+            }
+        });
+
+        $('#checkoutAll').click(function(){
+            if($(this).prop("checked")) {
+                $(".checkoutbox").prop("checked", true);
+            } else {
+                $(".checkoutbox").prop("checked", false);
+            }                
+        });
+
+
+        $('.checkoutbox').click(function(){
+            if($(".checkoutbox").length == $(".checkoutbox:checked").length) {
+                $("#checkoutAll").prop("checked", true);
+            }else {
+                $("#checkoutAll").prop("checked", false);            
+            }
+        });
+
+
+})
+</script>
 
 </body>
 </html>

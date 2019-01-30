@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <title>GES | Administration</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/base.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/login.css' %}"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/responsive.css' %}"/>
+    <script type="text/javascript" src="{% static '/assets/js-core/jquery-core.js' %}"></script>
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+
+    <style>
+        #id_city{
+            clear: both;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hidden{
+            display: none;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+
+<body class=" login" data-admin-utc-offset="0">
+    <div id="container">
+        <div id="header">
+            <div id="branding">
+                <h1 id="site-name"><a href="/admin/">E-Cell Administration</a></h1>
+            </div>
+        </div>
+        <div id="content" class="colM">
+            {% if error %}
+                <p class="errornote">
+                    Please enter the correct username and password for a staff account. Note that both fields may be case-sensitive.
+                </p>
+            {% endif %}
+            {% if not_valid %}
+                <p class="errornote">
+                    You are authenticated as {{ not_valid }}, but are not authorized to access this page. Would you like to login to a different account?
+                </p>
+            {% endif %}
+            <div id="content-main">
+                <form action="{% url 'contingent_details' %}" method="GET" id="login-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label class="required">Contingent Captcha:</label>
+                        <input type='text' name='c_id' id='c_id'>
+                    </div>
+                    <div class="submit-row">
+                        <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
+                    </div>
+                </form>
+                <hr>
+                <form action="{% url 'individual_details' %}" method="GET" id="login-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label class="required">Individual Id:</label>
+                        <input type='text' name='i_id' id='i_id'>
+                    </div>
+                    <div class="submit-row">
+                        <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
+                    </div>
+                </form>
+                <hr>
+                <form action="{% url 'individual_details' %}" method="GET" id="login-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label class="required">Professional's GES Id:</label>
+                        <input type='text' name='i_id' id='i_id'>
+                    </div>
+                    <div class="submit-row">
+                        <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
+                    </div>
+                </form>
+                <form action="{% url 'individual_details' %}" method="GET" id="login-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label class="required">Empresario SF</label>
+                        <input type='text' name='i_id' id='i_id'>
+                    </div>
+                    <div class="submit-row">
+                        <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
+                    </div>
+                </form>
+                <form action="{% url 'individual_details' %}" method="GET" id="login-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <label class="required">Startup Id</label>
+                        <input type='text' name='i_id' id='i_id'>
+                    </div>
+                    <div class="submit-row">
+                        <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
+                    </div>
+                </form>
+            </div>
+            <br class="clear"/>
+        </div>
+        <div id="footer"></div>
+    </div>
+
+
+</body>
+</html>
