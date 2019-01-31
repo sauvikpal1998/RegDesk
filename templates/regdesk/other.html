@@ -1,11 +1,11 @@
 {% if student.category == 'Empresario Semi-Finalists' or student.category == 'Startup' %}
-    {% if not checkedIn %}
+    {% if not checkedIn and not request.session.hall %}
         <p>Team Size: {{teamsize}}</p>
         <p></p>
         <form action='{% url  "empstartup" %}' method='GET'>
             <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-            {% csrf_token %}
+            
             <p>{{student.category}}<br>{{student.name}}</p>
             <div class="form-row">
 
@@ -26,17 +26,17 @@
                     <option value='{{hall.name}}'>{{hall.name}}: {{hall.left}} Left</option>
                 {% endfor %}
             </select>
-</div>
-<div class="submit-row">
+            </div>
+            <div class="submit-row">
 
-            <input type='submit'value='CheckIn'>
-</div>
+                        <input type='submit'value='Allot'>
+            </div>
         </form>
-    {% else %}
+    {% elif checkedIn and request.session.hall and checkedIn.hall_stat == '1' %}
         <form action='{% url  "checkout" %}' method='GET'>
                                             <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-            {% csrf_token %}
+            
             <div class="form-row">
                     <p>{{student.name}}</p>
                     <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
@@ -44,17 +44,48 @@
             <p>Hall: {{checkedIn.male_hall }} and {{checkedIn.female_hall}}</p>
             <p>Size: {{ checkedIn.male_num}}M and {{checkedIn.female_num }}F</p>
         </div>
-            <div class="submit-row">
-            <input type="submit" id='submit' value="CheckOut All"/>
+        <div class="submit-row">
+                {% if checkedIn.male_hall.name == request.session.hall or checkedIn.female_hall.name == request.session.hall %}
+                    <input type="submit" id='submit' value="CheckOut All"/>
+                {% else %}
+                You cannot CheckOut
+                {% endif %}
                 </div>
         </form>
-    {% endif %}
+    {% elif checkedIn and request.session.hall and checkedIn.hall_stat == '0' %}
+    <form action='{% url  "hall-checkin" %}' method='GET'>
+        <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+
+        <div class="form-row">
+        <p>{{student.name}}</p>
+        <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+        <p>{{student.category}}</p>
+        <p>Hall: {{checkedIn.male_hall }} and {{checkedIn.female_hall}}</p>
+        <p>Size: {{ checkedIn.male_num}}M and {{checkedIn.female_num }}F</p>
+        </div>
+        <div class="submit-row">
+        {% if checkedIn.male_hall.name == request.session.hall or checkedIn.female_hall.name == request.session.hall %}
+            <input type="submit" id='submit' value="CheckIn All"/>
+        {% else %}
+        You cannot CheckIn
+        {% endif %}
+        </div>
+        </form>
+        {% elif checkedIn and not request.session.hall %}
+        <p>{{student.user.pk}}: {{student.name}} - {{student.category}}</p>
+    <p>Allotted: {{checkedIn.male_hall}} / {{checkedIn.female_hall}}</p>
+    
+    {% elif not checkedIn and request.session.hall %}
+    <p>{{student.user.pk}}: {{student.name}} - {{student.category}}</p>
+        Not Allotted
+        {% endif %}
 {% else %}
-    {% if not checkedIn %}
+    {% if not checkedIn and not request.session.hall %}
         <form action='{% url "professional" %}' method='GET'>
                                             <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-            {% csrf_token %}
+            
             <div class="form-row">
                 <p>{{student.name}}</p>
             <p><input type='hidden' name='p_id' value = '{{student.user.pk}}'></p>
@@ -78,14 +109,18 @@
             {% endif %}
             </div>
             <div class="submit-row">
-            <input type='submit'value='CheckIn'>
+            <input type='submit'value='Allot'>
             </div>
         </form>
-    {% else %}
+    {% elif checkedIn and not request.session.hall %}
+    <p>{{student.user.pk}}: {{student.name}} - {{student.category}}</p>
+<p>Allotted: {{checkedIn.male_hall}} / {{checkedIn.female_hall}}</p>
+
+    {% elif checkedIn.hall_stat == '1' and request.session.hall %}
         <form action='{% url  "checkout" %}' method='GET'>
                                             <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-            {% csrf_token %}
+            
             <div class="form-row">
                     <p>{{student.name}}</p>
                     <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
@@ -93,8 +128,34 @@
             <p>Hall: {{checkedIn.male_hall }}{{checkedIn.female_hall}}</p>
             </div>
             <div class="submit-row">
-            <input type='submit'value='checkout'>
+                {% if checkedIn.male_hall.name is request.session.hall or checkedIn.female_hall.name is request.session.hall %}
+                    <input type="submit" id='submit' value="CheckOut All"/>
+                {% else %}
+                You cannot CheckOut
+                {% endif %}
             </div>
         </form>
+    {% elif checkedIn.hall_stat == '0' and request.session.hall %}
+    <form action='{% url  "hall-checkin" %}' method='GET'>
+            <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+
+            <div class="form-row">
+            <p>{{student.name}}</p>
+            <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+            <p>{{student.category}}</p>
+            <p>Hall: {{checkedIn.male_hall }}{{checkedIn.female_hall}}</p>
+            </div>
+            <div class="submit-row">
+                {% if checkedIn.male_hall.name == request.session.hall or checkedIn.female_hall.name == request.session.hall %}
+                    <input type="submit" id='submit' value="CheckIn All"/>
+                {% else %}
+                You cannot CheckIn
+                {% endif %}            </div>
+        </form>
+
+    {% elif not checkedIn and request.session.hall %}
+    <p>{{student.user.pk}}: {{student.name}} - {{student.category}}</p>
+    Not Allotted
     {% endif %}
 {% endif %}

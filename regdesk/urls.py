@@ -16,4 +16,9 @@ urlpatterns = [
   path('professional', views.ProfessionalCheckIn, name='professional'),
   path('checkout', views.CheckOut, name='checkout'),
   path('offlinepay/', views.OfflinePay, name='offlinepay'),
+  path('hall-dash', views.hallDashBoard, name='hall-dash'),
+  path('hall-get/', views.getHalls, name='get-halls'),
+  path('hall-con-in', views.hall_con_checkin, name='hall-con-in'),
+  path('hall-checkin', views.hallCheckin, name='hall-checkin'),
+  path('full',views.allAllotted, name='full')
 ]

@@ -12,6 +12,9 @@
     <meta name="robots" content="NONE,NOARCHIVE"/>
 
     <style>
+        #container{
+            width:80% !important;
+        }
         #id_city{
             clear: both;
             padding: 8px;
@@ -31,13 +34,19 @@
     <div id="container">
         <div id="header">
             <div id="branding">
-                <h1 id="site-name"><a href="/admin/">E-Cell Administration</a></h1>
+                <h1 id="site-name"><a href="{% url 'regdesk_dashboard' %}">Forms</a><span style="right: 6px;position: absolute;"><a href='{% url "regdesk_logout" %}'>Logout </a></span></h1>
+            </div>
+            <div >
+                    {% if request.session.hall %}
+                    <span id="site-name"><a href='{% url "hall-dash" %}'> Dashboard</a></span>
+                    {% endif %}
             </div>
         </div>
         <div id="content" class="colM">
+            {% if not request.session.hall %}
             <form action='{% url  "hall_allotment" %}' method='GET'>
                                 <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
-                {% csrf_token %}
+                
                 <div class='form-row'>
                         <p><input type="checkbox" id="checkinAll" >Select All</p>
 
@@ -76,28 +85,62 @@
                     </select> 
                 </div>
                 <input type='hidden' name='c_id' value='{{captcha}}'>
-                <div class='submit-row'><input type='submit' value="CheckIn"></div>
+                <div class='submit-row'><input type='submit' value="Allot"></div>
         
             </form>
+
+            {% endif %}
 <br><hr><br>
         <p>Checked in: Info</p>
+            {% if request.session.hall %}
+                <form method='GET' action = '{% url "con_checkout" %}'>
+                        <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-        <form method='POST' action = '{% url "con_checkout" %}'>
-                <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+                    
+                <input type='hidden' name='c_id' value='{{captcha}}'>
+                <div class="form-row">
+                        <p><input type="checkbox" id="checkoutAll" >Select All</p>
 
-            {% csrf_token %}
-        <input type='hidden' name='c_id' value='{{captcha}}'>
-        <div class="form-row">
-                <p><input type="checkbox" id="checkoutAll" >Select All</p>
+                {% for stu in allotted %}
+                {% if stu.male_hall.name == request.session.hall or stu.female_hall.name == request.session.hall %}
 
-        {% for stu in checkedIn %}
-        <p><input class="checkoutbox" type='checkbox' name='{{stu.pk}}' value = 'out'>{{stu.name}}: {{stu.category}}</p>
-        {% endfor %}
-        </div>
-        <div class='submit-row'><input type='submit' value="Checkout"></div>
-        
-    </form>
+                {% if stu.hall_stat == '1' %}
+                <p><input class="checkoutbox" type='checkbox' name='{{stu.user.pk}}' value = 'out'>{{stu.userdata.name}}: {{stu.userdata.category}}</p>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                </div>
+                <div class='submit-row'><input type='submit' value="Checkout Selected"></div>
+                
+                </form><br><br>
+                
+                <form method='GET' action = '{% url "hall-con-in" %}'>
+                    <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
+                
+            <input type='hidden' name='c_id' value='{{captcha}}'>
+            <div class="form-row">
+                    <p><input type="checkbox" id="checkinAll" >Select All</p>
+
+            {% for stu in allotted %}
+            {% if stu.male_hall.name == request.session.hall or stu.female_hall.name == request.session.hall %}
+
+            {% if stu.hall_stat == '0' %}
+            <p><input class="checkinbox" type='checkbox' name='{{stu.user.pk}}' value = '1'>{{stu.userdata.name}}: {{stu.userdata.category}}</p>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            </div>
+            <div class='submit-row'><input type='submit' value="CheckIn Selected"></div>
+            
+        </form>
+    {% else %}
+
+    {% for stu in checkedIn %}
+    <p>{{stu.name}}: {{stu.category}}</p>
+    {% endfor %}
+
+    {% endif %}
     </div>
         <div id="footer"></div>
     </div>

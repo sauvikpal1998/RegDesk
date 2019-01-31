@@ -60,11 +60,11 @@
                         {% endif %}
                     </div>
                     <div class="form-row hidden" id="city">
-                        <label class="col-sm-3 control-label" for="{{ form.city.id_for_label }}">City</label>
+                        <label class="col-sm-3 control-label" for="{{ form.city.id_for_label }}">Hall</label>
                         <div class="col-sm-12">
-                            <select name="city" class="city">
-                                <option selected disabled>Select Your City</option>
-                            </select>
+                            <select name="hall" class="hall">
+                            <!--    <option selected disabled>Select Your Hall</option>
+                            -->                            </select>
                         </div>
                     </div>
                     <div class="submit-row">
@@ -82,7 +82,8 @@
 
     $("#id_username").keyup(function () {
         const username = $(this).val();
-        if (username === 'ges_intern'){
+        if (username === 'intern@ecell-iitkgp.org'){
+            halls()
             $("#city").removeClass('hidden');
             $("#id_city").prop('required', 'required');
         } else{
@@ -93,18 +94,20 @@
     </script>
 
     <script>
+       function halls(){
        $.ajax({
-           url: '/register/city',
+           url: '/regdesk/hall-get/',
            cache: false,
            data: $("form").serialize(),
            type: 'POST',
            success: function(data){
-               $(".city").append(data);
+               $(".hall").append(data);
            },
            error: function(data){
                alert('Unable to fetch city list due to internet connectivity issues.');
            }
        });
+       }
     </script>
 
 </body>

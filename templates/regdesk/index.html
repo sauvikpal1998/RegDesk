@@ -12,6 +12,9 @@
     <meta name="robots" content="NONE,NOARCHIVE"/>
 
     <style>
+        #container{
+            width:80% !important;
+        }
         #id_city{
             clear: both;
             padding: 8px;
@@ -30,9 +33,14 @@
 <body class=" login" data-admin-utc-offset="0">
     <div id="container">
         <div id="header">
-            <div id="branding">
-                <h1 id="site-name"><a href="/admin/">E-Cell Administration</a></h1>
-            </div>
+                <div id="branding">
+                        <h1 id="site-name"><a href="{% url 'regdesk_dashboard' %}">Forms</a><span style="right: 6px;position: absolute;"><a href='{% url "regdesk_logout" %}'>Logout </a></span></h1>
+                    </div>
+                <div >
+                        {% if request.session.hall %}
+                        <span id="site-name"><a href='{% url "hall-dash" %}'> Dashboard</a></span>
+                        {% endif %}
+                </div>
         </div>
         <div id="content" class="colM">
             {% if error %}
@@ -47,7 +55,7 @@
             {% endif %}
             <div id="content-main">
                 <form action="{% url 'contingent_details' %}" method="GET" id="login-form">
-                    {% csrf_token %}
+                    
                     <div class="form-row">
                         <label class="required">Contingent Captcha:</label>
                         <input type='text' name='c_id' id='c_id'>
@@ -58,7 +66,7 @@
                 </form>
                 <hr>
                 <form action="{% url 'individual_details' %}" method="GET" id="login-form">
-                    {% csrf_token %}
+                    
                     <div class="form-row">
                         <label class="required">Individual Id:</label>
                         <input type='text' name='i_id' id='i_id'>
@@ -69,7 +77,7 @@
                 </form>
                 <hr>
                 <form action="{% url 'individual_details' %}" method="GET" id="login-form">
-                    {% csrf_token %}
+                    
                     <div class="form-row">
                         <label class="required">Professional's GES Id:</label>
                         <input type='text' name='i_id' id='i_id'>
@@ -79,7 +87,7 @@
                     </div>
                 </form>
                 <form action="{% url 'individual_details' %}" method="GET" id="login-form">
-                    {% csrf_token %}
+                    
                     <div class="form-row">
                         <label class="required">Empresario SF</label>
                         <input type='text' name='i_id' id='i_id'>
@@ -89,7 +97,7 @@
                     </div>
                 </form>
                 <form action="{% url 'individual_details' %}" method="GET" id="login-form">
-                    {% csrf_token %}
+                    
                     <div class="form-row">
                         <label class="required">Startup Id</label>
                         <input type='text' name='i_id' id='i_id'>

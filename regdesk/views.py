@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.urls import resolve
+from django.contrib.auth.decorators import login_required
 
 from registration.models import Contingent,Data
 from login.models import PostRegEmpresario, PostRegStartup
@@ -25,15 +26,19 @@ def login_admin(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            rett = 'regdesk_dashboard'
             if user.is_superuser:
-                if request.POST.get('city'):
+                if request.POST.get('hall'):
                     request.session['intern'] = True
-                    request.session['city'] = request.POST['city']
-
+                    request.session['hall'] = request.POST['hall']
+                    rett = 'hall-dash'
                 else:
                     request.session['intern'] = False
                 login(request, user)
-                return redirect('regdesk_dashboard')
+                try:
+                  return redirect(request.POST['next'])
+                except:
+                  return redirect(rett)
 
             context['not_valid'] = user.username
             return render(request, 'regdesk/login.html', context)
@@ -41,6 +46,11 @@ def login_admin(request):
         context['error'] = 'no user'
         return render(request, 'regdesk/login.html', context)
 
+    if request.method =='GET':
+      try:
+        context['next'] = request.GET['next']
+      except:
+        pass
     return render(request, 'regdesk/login.html', context)
 
 
@@ -52,11 +62,13 @@ def logout_admin(request):
 
 
 # Index Page
+@login_required(login_url='/regdesk/login/')
 def index(request):
   return render(request, 'regdesk/index.html')
 
 
 # Contingent Details
+@login_required(login_url='/regdesk/login/')
 def contingent_details(request):
   
   context = {}
@@ -73,7 +85,7 @@ def contingent_details(request):
         checkedIn.append(student)
 
     checkedIn_user = [obj.user for obj in checkedIn]
-
+    allotted = Allotment.objects.all()
     students = students.exclude(user__in=checkedIn_user)
     students_male = students.filter(gender='M')
     male_num = students_male.count()
@@ -92,12 +104,14 @@ def contingent_details(request):
       'female_halls' : female_halls,
       'male_halls' : male_halls,
       'checkedIn' : checkedIn,
+      'allotted': allotted,
     }
     
   return render(request, 'regdesk/details.html', context)
 
 
-# Contingent CheckIn
+# Contingent Allotment
+@login_required(login_url='/regdesk/login/')
 def hall_allotment(request):
   sum = 0
   if request.method == 'GET':
@@ -130,6 +144,7 @@ def hall_allotment(request):
      
 
 # Student, Professional, Professor, Startup, Empresario SF Details
+@login_required(login_url='/regdesk/login/')
 def AllDetails(request):
   if request.method == 'GET':
     i_id = request.GET['i_id']
@@ -186,7 +201,8 @@ def AllDetails(request):
     return render(request, 'regdesk/individualDetails.html', context)  
 
 
-# Student, Professor CheckIn
+# Student, Professor Allotment
+@login_required(login_url='/regdesk/login/')
 def IndividualCheckIn(request):
   if request.method=='GET':
     individual_id = request.GET.get('i_id')
@@ -215,7 +231,8 @@ def IndividualCheckIn(request):
     return HttpResponse('failed <a href="'+ request.GET['redirect'] +'">Click Here </a> ')   
 
 
-# Empresario and Startup CheckIn
+# Empresario and Startup Allotment
+@login_required(login_url='/regdesk/login/')
 def EmpStartupCheckIn(request):
   pass
   if request.method=='GET':
@@ -232,12 +249,12 @@ def EmpStartupCheckIn(request):
     obj.female_num = female_users
     if male_hall != 'None':
       obj.male_hall = MaleHall.objects.get(name=male_hall)
-      obj.hall.inc(male_users)
+      obj.male_hall.inc(int(male_users))
     else:
       obj.male_hall = None
     if female_hall != 'None':
-      obj.female_hall = MaleHall.objects.get(name=female_hall)
-      obj.hall.inc(female_users)
+      obj.female_hall = FemaleHall.objects.get(name=female_hall)
+      obj.female_hall.inc(int(female_users))
     else:
       obj.female_hall = None
     if(Data.objects.get(user=user).category == 'Startup'):
@@ -253,23 +270,24 @@ def EmpStartupCheckIn(request):
     return HttpResponse('failed <a href="'+ request.GET['redirect'] +'">Click Here </a>')
 
 
-# Professional Checkin
+# Professional Allotment
+@login_required(login_url='/regdesk/login/')
 def ProfessionalCheckIn(request):
   if request.method=='GET':
-    professional_id = request.GET.get('p_id')
+    professional_id = request.GET['p_id']
     user = get_object_or_404(User,id=professional_id)
-    hall = request.GET.get('hall')
+    hall = request.GET['hall']
     userData = Data.objects.get(user=user)
     if(userData.category == 'Professional'):
 
       obj = AltAllotment()
       obj.user = user
       if userData.gender == 'M':
-        obj.hall = MaleHall.objects.get(name = hall)
-        obj.hall.inc()
+        obj.male_hall = MaleHall.objects.get(name = hall)
+        obj.male_hall.inc()
       else:
-        obj.hall = FemaleHall.objects.get(name = hall)
-        obj.hall.inc()
+        obj.female_hall = FemaleHall.objects.get(name = hall)
+        obj.female_hall.inc()
       obj.category = 'Professional'
       obj.save()
       return HttpResponse('success <a href="'+ request.GET['redirect'] +'">Click Here </a>')
@@ -279,6 +297,8 @@ def ProfessionalCheckIn(request):
     return HttpResponse('failed <a href="'+ request.GET['redirect'] +'">Click Here </a>')   
 
 
+# Offline Payment
+@login_required(login_url='/regdesk/login/')
 def OfflinePay(request):
   if request.method == 'POST':
     uid = request.POST['uid']
@@ -289,7 +309,12 @@ def OfflinePay(request):
     ofp.user = user
     ofp.amount = amount
     ofp.save()
-    userdata.stage = 2
+    if userdata.contingent:
+      for data in Data.objects.filter(contingent = userdata.contingent):
+        data.stage =2
+        data.save()
+    else:
+      userdata.stage = 2
     userdata.save()
     return HttpResponse('Payment Registered <a href="'+ request.GET['redirect'] +'">Click Here </a>')
   else:
@@ -297,7 +322,9 @@ def OfflinePay(request):
 
 
 # Individual Checkout
+@login_required(login_url='/regdesk/login/')
 def CheckOut(request):
+  return HttpResponse('Not Permitted')
   if request.method == 'GET':
     uid = request.GET['i_id']
     user = User.objects.get(pk = uid)
@@ -308,37 +335,139 @@ def CheckOut(request):
         obj.male_hall.dec()
       else:  
         obj.female_hall.dec()
-      obj.delete()
+      obj.hall_checkout()
       return HttpResponse('Success <a href="'+ request.GET['redirect'] +'">Click Here </a>')      
     except Exception as e:
       try:
         obj = AltAllotment.objects.get(user=user)
-        obj.male_hall.dec(obj.male_num)
-        obj.female_hall.dec(obj.female_num)
-        obj.delete()
+        if data.gender == 'M':
+          obj.male_hall.dec(obj.male_num)
+        else:  
+          obj.female_hall.dec(obj.female_num)
+        obj.hall_checkout()
         return HttpResponse('Success <a href="'+ request.GET['redirect'] +'">Click Here </a>')
       except Exception as e2:
         return HttpResponse(e2)
 
 
 # Contingent CheckOut
+@login_required(login_url='/regdesk/login/')
 def con_checkout(request):
-  if request.method == 'POST':
-    con_id = request.POST["c_id"]
+  return HttpResponse('Not Permitted')
+  if request.method == 'GET':
+    con_id = request.GET["c_id"]
     contingent = Contingent.objects.get(captcha=con_id)
     students = Data.objects.filter(contingent=contingent.pk)
     sum = 0
     for student in students:
-      if (request.POST.get(str(student.pk))=='out'):
+      if (request.GET.get(str(student.user.pk))=='out'):
         sum += 1
         obj = Allotment.objects.get(user = student.user)
         if student.gender == 'M':
           obj.male_hall.dec()
         else:  
           obj.female_hall.dec()
-        obj.delete()
-    return HttpResponse(str(sum)+' Checked Out All <a href="'+ request.POST['redirect'] +'">Click Here </a>')
+        obj.hall_checkout()
+    return HttpResponse(str(sum)+' Checked Out All <a href="'+ request.GET['redirect'] +'">Click Here </a>')
   
   else:
-    return HttpResponse('Invalid Request, <a href="'+ request.POST['redirect'] +'">Click Here </a> ')
+    return HttpResponse('Invalid Request, <a href="'+ request.GET['redirect'] +'">Click Here </a> ')
      
+
+# Hall Checkin
+@login_required(login_url='/regdesk/login/')
+def hallCheckin(request):
+  if request.method == 'GET':
+    uid = request.GET['i_id']
+    user = User.objects.get(pk = uid)
+    try:
+      obj = Allotment.objects.get(user = user)
+      obj.hall_checkin()
+      return HttpResponse('CheckedIn at Hall. <a href="'+ request.GET['redirect'] +'">Click Here </a>')
+    except Exception as e:
+      try:
+        obj = AltAllotment.objects.get(user = user)
+        obj.hall_checkin()
+        return HttpResponse('CheckedIn at Hall. <a href="'+ request.GET['redirect'] +'">Click Here </a>')
+      except Exception as e2:
+        return HttpResponse(e2)
+
+# Contingent Hall Checkin
+@login_required(login_url='/regdesk/login/')
+def hall_con_checkin(request):
+  sum = 0
+  if request.method == 'GET':
+    con_id = request.GET.get("c_id")
+    contingent = Contingent.objects.get(captcha=con_id)
+    students = Data.objects.filter(contingent=contingent.pk)
+    
+    for student in students:
+      if (request.GET.get(str(student.user.pk))=='1'):
+        sum += 1
+        obj = Allotment.objects.get(user = student.user)
+        if obj.male_hall:
+          obj.hall_checkin()
+        elif obj.female_hall:
+          obj.hall_checkin()
+        else:
+          return HttpResponse('error')
+    return HttpResponse(str(sum) + ' Checked In   <a href="'+ request.GET['redirect'] +'">Click Here </a>')
+  
+  else:
+    return HttpResponse('Invalid Request')
+     
+
+@login_required(login_url='/regdesk/login/')
+def hallDashBoard(request):
+  allotAll = None
+  allotAlt = None
+  try:
+    hall = MaleHall.objects.get(name= request.session['hall'])
+    allotAll = Allotment.objects.filter(male_hall = hall)
+  except Exception as e1:
+    try:
+      hall = FemaleHall.objects.get(name= request.session['hall'])
+      allotAll = Allotment.objects.filter(female_hall = hall)
+    except Exception as e2:
+      try:
+        hall = MaleHall.objects.get(name= request.session['hall'])
+        allotAlt = AltAllotment.objects.filter(male_hall = hall)
+      except Exception as e3:
+        try:
+          hall = FemaleHall.objects.get(name= request.session['hall'])
+          allotAlt = AltAllotment.objects.filter(female_hall = hall)
+        except Exception as e4:
+          return HttpResponse(e4)
+  context = {
+    'allotAll': allotAll,
+    'allotAlt': allotAlt,
+  }
+  return render(request, 'regdesk/hallIndex.html', context)
+
+
+def getHalls(request):
+  mhalls = MaleHall.objects.all()
+  fhalls = FemaleHall.objects.all()
+  data = ''
+  for hall in mhalls:
+    data = data + '<option> '+ hall.name +' </option>'
+  for hall in fhalls:
+    data = data + '<option> '+ hall.name +' </option>'
+  return HttpResponse(data)
+  
+
+def allAllotted(request):
+  allotAll = None
+  allotAlt = None
+  try:
+    allotAll = Allotment.objects.all()
+  except Exception as e1:
+    try:
+      allotAlt = AltAllotment.objects.all()
+    except Exception as e2:
+      return HttpResponse(e2)
+  context = {
+    'allotAll': allotAll,
+    'allotAlt': allotAlt,
+  }
+  return render(request, 'regdesk/full.html', context)

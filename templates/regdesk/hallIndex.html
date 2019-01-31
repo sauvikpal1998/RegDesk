@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <title>GES | Administration</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/base.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/login.css' %}"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static '/admin/css/responsive.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/assets/widgets/datatable/datatable.css' %}">
+    <script type="text/javascript" src="{% static '/assets/js-core/jquery-core.js' %}"></script>
+    <meta name="robots" content="NONE,NOARCHIVE"/>
+
+    <style>
+        #container{
+            width:80% !important;
+        }
+        #id_city{
+            clear: both;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hidden{
+            display: none;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+
+<body class=" login" data-admin-utc-offset="0">
+    <div id="container">
+        <div id="header">
+                <div id="branding">
+                        <h1 id="site-name"><a href="{% url 'regdesk_dashboard' %}">Forms</a><span style="right: 6px;position: absolute;"><a href='{% url "regdesk_logout" %}'>Logout </a></span></h1>
+                    </div>
+                <div >
+                        {% if request.session.hall %}
+                        <span id="site-name"><a href='{% url "hall-dash" %}'> Dashboard</a></span>
+                        {% endif %}
+                </div>
+        </div>
+        <br><br>
+        <div class='content'>
+           <table id="datatable-responsive" class="table table-striped table-bordered responsive no-wrap" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Contingent Id</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ind in allotAll %}
+                {% if ind.male_hall.name == request.session.hall or ind.female_hall.name == request.session.hall %}
+                <tr>
+                    <th>{{ind.user}}</th>
+                    <th>{{ind.userdata.name}}</th>
+                    <th>{{ind.userdata.category}}</th>
+                    <th>{{ind.userdata.contingent}}</th>
+                    <th>{% if ind.hall_stat == '0' %} Not Checked In {% else %} CheckedIn {% endif %}</th>
+                    <th><a href='/regdesk/individual_details?i_id={{ind.user.pk}}'><button>Details</button></a></th>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+                {% for ind in allotAlt %}
+                {% if ind.male_hall.name == request.session.hall or ind.female_hall.name == request.session.hall %}
+                <tr>
+                    <th>{{ind.user}}</th>
+                    <th>{{ind.userdata.name}}</th>
+                    <th>{{ind.userdata.category}}</th>
+                    <th>{{ind.userdata.contingent}}</th>
+                    <th>{% if ind.hall_stat == '0' %} Not Checked In {% else %} CheckedIn {% endif %}</th>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+            </tbody>
+
+           </table>
+            <br class="clear"/>
+        </div>
+        <div id="footer"></div>
+    </div><script>
+    $(document).ready(function () {
+        $('#datatable-responsive').DataTable({
+            responsive: true
+        });
+        $(document).ready(function () {
+                    $('.dataTables_filter input').attr("placeholder", "Search...");
+                });
+    });</script>
+    <script type="text/javascript" src="{% static '/assets/widgets/datatable/datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/datatable/datatable-bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/widgets/datatable/datatable-responsive.js' %}"></script>
+    <script type="text/javascript" src="{% static '/assets/js-core/jquery-ui-widget.js' %}"></script>
+
+</body>
+</html>

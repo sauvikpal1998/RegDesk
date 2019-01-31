@@ -12,6 +12,9 @@
     <meta name="robots" content="NONE,NOARCHIVE"/>
 
     <style>
+        #container{
+            width:80% !important;
+        }
         #id_city{
             clear: both;
             padding: 8px;
@@ -31,7 +34,12 @@
     <div id="container">
         <div id="header">
             <div id="branding">
-                <h1 id="site-name"><a href="{% url 'regdesk_dashboard' %}">E-Cell Administration</a></h1>
+                    <h1 id="site-name"><a href="{% url 'regdesk_dashboard' %}">Forms</a><span style="right: 6px;position: absolute;"><a href='{% url "regdesk_logout" %}'>Logout </a></span></h1>
+                </div>
+            <div >
+                    {% if request.session.hall %}
+                    <span id="site-name"><a href='{% url "hall-dash" %}'> Dashboard</a></span>
+                    {% endif %}
             </div>
         </div>
         <div id="content" class="colM">
@@ -45,22 +53,22 @@
                     <form action="{% url 'contingent_details' %}" method="GET" id="login-form">
                                         <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
     
-                        {% csrf_token %}
+                        
                             <div class="form-row">
                                 <label class="required">Contingent Captcha:</label>
-                                <input type='text' name='c_id' id='c_id' value=""placeholder='Contingent Captcha'>
+                                <input type='text' name='c_id' id='c_id' value="{{conCaptcha}}"placeholder='Contingent Captcha'>
                             </div>
                             <div class="submit-row">
                                 <label>&nbsp;</label><input type="submit" id='submit' value="Go"/>
                             </div>
                     </form>
                 {% else %}
-                    {% if not student.stage > 1 %}
+                    {% if not student.stage > 1 and not request.session.hall %}
                     <h1 style="color:red">**Payment Not Done. Collect Fees</h1>
                     <form action='{% url "offlinepay" %}' method="POST">
                                         <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-                        {% csrf_token %}
+                        
                         <div class="form-row">
                             <p> <input type='hidden' name='uid' value="{{ student.user.pk }}"></p>
                             <p> <label>Amount</label> <input type='text' name='amount'/></p>
@@ -70,16 +78,16 @@
                             <input type="submit" value="Register Payment">
                         </div>
                     </form>
-                    {% else %}
+                    {% elif student.stage > 1 and not request.session.hall %}
                     <h1>Payment done already</h1>
                     {% endif %}
                     <hr><br><br>
 
-                    {% if not checkedIn %}
+                    {% if not checkedIn and not request.session.hall %}
                         <form action='{% url  "individual" %}' method='GET'>
                                             <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-                            {% csrf_token %}
+                            
                             <div class="form-row">
                             <p>{{student.name}}</p>
                             <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
@@ -103,29 +111,54 @@
                             {% endif %}
                                 </div>
                             <div class="submit-row">
-                            <input type='submit'value='CheckIn'>
+                            <input type='submit'value='Allot'>
                             </div>
                         </form>
-                    {% else %}
+                    {% elif checkedIn and checkedIn.hall_stat == '1' and request.session.hall  %}
                         <form action='{% url  "checkout" %}' method='GET'>
                                             <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-                            {% csrf_token %}
+                            
                             <p>{{student.name}}</p>
                             <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
                             <p>{{student.category}}</p>
                             <p>Hall: {{checkedIn.male_hall }} / {{checkedIn.female_hall}}</p>
-                            <input type='submit'value='CheckOut'>
+                            {% if checkedIn.male_hall.name == request.session.hall or checkedIn.female_hall.name == request.session.hall %}
+                                <input type="submit" id='submit' value="CheckOut"/>
+                            {% else %}
+                            You cannot CheckOut
+                            {% endif %}
                         </form>
+                        {% elif checkedIn and not request.session.hall %}
+                        <p>{{student.user.pk}}: {{student.name}} - {{student.category}}</p>
+                    <p>Allotted: {{checkedIn.male_hall}} / {{checkedIn.female_hall}}</p>
+                    
+                    {% elif checkedIn and checkedIn.hall_stat == '0' and request.session.hall %}
+                    <form action='{% url  "hall-checkin" %}' method='GET'>
+                        <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
+
+                        
+                        <p>{{student.name}}</p>
+                        <p><input type='hidden' name='i_id' value = '{{student.user.pk}}'></p>
+                        <p>{{student.category}}</p>
+                        <p>Hall: {{checkedIn.male_hall }} / {{checkedIn.female_hall}}</p>
+                        {% if checkedIn.male_hall.name == request.session.hall or checkedIn.female_hall.name == request.session.hall %}
+                            <input type="submit" id='submit' value="CheckIn"/>
+                        {% else %}
+                        You cannot CheckIn
+                        {% endif %}   
+                        </form>
+                    {% elif not checkedIn %}
+                    Not Allotted
                     {% endif %}
                 {% endif %}
             {% else %}
-                {% if not student.stage > 1 %}
+                {% if not student.stage > 1 and not request.session.hall  %}
                 <h1 style="color:red">**Payment Not Done. Collect Fees</h1>
                 <form action='{% url "offlinepay" %}' method="POST">
                                     <input type='hidden' name='redirect' value='{{ request.build_absolute_uri }}'>
 
-                    {% csrf_token %}
+                    
                     <div class="form-row">
                             <p> <input type='hidden' name='uid' value="{{ student.user.pk }}"></p>
                             <p> <label>Amount</label> <input type='text' name='amount'/></p>
@@ -135,7 +168,7 @@
                         <input type="submit" value="Register Payment">
                     </div>
                 </form>
-                {% else %}
+                {% elif student.stage > 1 %}
                 <h1>Payment done already</h1>
                 {% endif %}
                 <hr><br><br>
